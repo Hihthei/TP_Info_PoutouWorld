@@ -112,7 +112,10 @@ void Player::FixedUpdate()
 {
     PE_Body *body = GetBody();
     PE_Vec2 position = body->GetPosition();
-    // TODO : Récuperer la vitesse du joueur
+    // DID : Récuperer la vitesse du joueur
+
+    PE_Vec2 velocity = body->GetLocalVelocity();
+    printf("%f\n", velocity);
 
     // Réveille les corps autour du joueur
     WakeUpSurroundings();
