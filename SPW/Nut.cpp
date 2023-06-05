@@ -11,12 +11,23 @@ Nut::Nut(Scene &scene) :
 
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::ENEMY);
     AssertNew(atlas);
+    RE_AtlasPart* part;
+    RE_TexAnim* idleAnim;
+    RE_TexAnim* spinAnim;
 
     // Animation "Idle"
-    RE_AtlasPart *part = atlas->GetPart("NutIdle");
+    part = atlas->GetPart("NutIdle");
     AssertNew(part);
-    RE_TexAnim *idleAnim = new RE_TexAnim(m_animator, "Idle", part);
+    idleAnim = new RE_TexAnim(m_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
+
+    // Animation "Spin"
+    part = atlas->GetPart("NutSpinning");
+    AssertNew(part);
+    spinAnim = new RE_TexAnim(m_animator, "Spinning", part);
+    spinAnim->SetCycleCount(0);
+    spinAnim->SetCycleTime(0.4f);
+
 }
 
 Nut::~Nut()
@@ -122,7 +133,8 @@ void Nut::FixedUpdate()
     {
         // Le joueur est à moins de 5 tuiles de la noisette
         m_state = State::SPINNING;
-        body->SetVelocity(PE_Vec2(-3.0f, 10.0f));
+        m_animator.PlayAnimation("Spinning");
+        body->SetVelocity(PE_Vec2(-4.0f, 10.0f));
         body->SetAwake(false);
     } 
 
