@@ -134,7 +134,8 @@ void Nut::Damage(GameBody *damager)
 {
     // DID
     Player* player = dynamic_cast<Player*>(damager);
-    /*SetEnabled(false);*/
+    if (player) player->Bounce();
+    
     m_state = State::DYING;
 }
 
