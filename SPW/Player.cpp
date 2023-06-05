@@ -96,13 +96,13 @@ void Player::Render()
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     SDL_FRect rect = { 0 };
 
-    // TODO : Trouver les bonnes diemnsions de l'affichage en fonction du sprite (dimensions en tuiles)
+    // DID : Trouver les bonnes diemnsions de l'affichage en fonction du sprite (dimensions en tuiles)
     rect.h = 1.2f * scale; 
     rect.w = 1.0f * scale; 
     camera->WorldToView(GetPosition(), rect.x, rect.y);
 
     // Dessine l'animateur du joueur
-    // TODO : Trouver le bon anchor
+    // DID : Trouver le bon anchor
     m_animator.RenderCopyExF(
         &rect, RE_Anchor::CENTER , 0.0f, Vec2(0.5f, 0.5f), flip
     );
@@ -161,8 +161,23 @@ void Player::FixedUpdate()
 
     // Détermine l'état du joueur et change l'animation si nécessaire
 
-    // TODO : Ajouter la gestion des animations Idle et Falling
-    m_animator.PlayAnimation("Idle");
+    // DID : Ajouter la gestion des animations Idle et Falling
+    if (m_onGround)
+    {
+        if (m_state != State::IDLE)
+        {
+            m_state = State::IDLE;
+            m_animator.PlayAnimation("Idle");
+        }
+    }
+    else
+    {
+        if (m_state != State::FALLING)
+        {
+            m_state = State::FALLING;
+            m_animator.PlayAnimation("Falling");
+        }
+    }
 
     // Orientation du joueur
     // Utilisez m_hDirection qui vaut :
@@ -194,7 +209,8 @@ void Player::FixedUpdate()
     }
 
     // DID : Rebond sur les ennemis
-    if (m_bounce) {
+    if (m_bounce)
+    {
         m_bounce = false;
         velocity.y = 15.0f;
     }
