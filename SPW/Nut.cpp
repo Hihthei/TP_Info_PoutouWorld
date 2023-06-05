@@ -69,9 +69,9 @@ void Nut::FixedUpdate()
         return;
     }
 
-    if (body->IsAwake() == false)
+    if (body->IsAwake() == false || m_state == State::DYING)
     {
-        // Ne met pas à jour la noisette si elle est endormie
+        // Ne met pas à jour la noisette si elle est endormie ou morte
         // Le joueur est loin d'elle et elle n'est plus visible par la caméra.
         return;
     }
@@ -87,15 +87,39 @@ void Nut::FixedUpdate()
 
     float dist = PE_Distance(position, player->GetPosition());
 
-    if (dist > 24.0f)
+    if (dist > 5.0f)
     {
         // La distance entre de joueur et la noisette vient de dépasser 24 tuiles.
         // On endort la noisette pour ne plus la simuler dans le moteur physique.
         body->SetAwake(false);
-        return;
+        m_state = State::IDLE;
     }
-
-    // TODO : Mettre la noisette en mouvement à l'approche du joueur
+    // DID : Mettre la noisette en mouvement à l'approche du joueur
+    else if (dist <= 5.0f && m_state == State::IDLE && position == GetStartPosition())
+    {
+        body->SetAwake(true);
+        m_state = State::ATTACKING;
+        if(player->GetPosition().x < position.x)
+            body->SetVelocity(PE_Vec2(-3.0f, 10.0f));
+        else
+            body->SetVelocity(PE_Vec2(3.0f, 10.0f));
+    }
+    else if (position.y == GetStartPosition().y)
+    {
+        m_state = State::SPINNING;
+        if (body->IsAwake() && dist <= 5.0f && m_state == State::SPINNING)
+        {
+            if (player->GetPosition().x < position.x)
+                body->SetVelocity(PE_Vec2(-3.0f, 0.0f));
+            else
+                body->SetVelocity(PE_Vec2(3.0f, 0.0f));
+        }
+        else if (dist > 9.0f)
+        {
+            body->SetAwake(false);
+            m_state = State::IDLE;
+        }
+    }  
 }
 
 void Nut::Render()

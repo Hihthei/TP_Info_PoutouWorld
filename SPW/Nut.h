@@ -23,7 +23,7 @@ private:
 
     enum class State
     {
-        IDLE, SPINNING, DYING
+        IDLE, SPINNING, DYING, ATTACKING
     };
     State m_state;
 };
