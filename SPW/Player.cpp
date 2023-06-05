@@ -273,6 +273,8 @@ void Player::OnCollisionEnter(GameCollision &collision)
     PE_Collider *otherCollider = collision.otherCollider;
 
     // Collision avec un ennemi
+    
+
     if (otherCollider->CheckCategory(CATEGORY_ENEMY))
     {
         Enemy *enemy = dynamic_cast<Enemy *>(collision.gameBody);

@@ -132,7 +132,10 @@ void Nut::OnRespawn()
 
 void Nut::Damage(GameBody *damager)
 {
-    // TODO
+    // DID
+    Player* player = dynamic_cast<Player*>(damager);
+    /*SetEnabled(false);*/
+    m_state = State::DYING;
 }
 
 void Nut::OnCollisionStay(GameCollision &collision)
@@ -140,7 +143,13 @@ void Nut::OnCollisionStay(GameCollision &collision)
     PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
 
-    // TODO : Désactiver les collisions lorsque la noisette est en train de mourir
+    // DID : Désactiver les collisions lorsque la noisette est en train de mourir
+
+    if (m_state == State::DYING)
+    {
+        collision.SetEnabled(false);
+        return;
+    }
 
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
@@ -156,6 +165,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
         {
             player->Damage();
         }
+        
         return;
     }
 }
