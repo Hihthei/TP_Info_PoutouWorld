@@ -112,10 +112,9 @@ void Player::FixedUpdate()
 {
     PE_Body *body = GetBody();
     PE_Vec2 position = body->GetPosition();
-    // DID : Récuperer la vitesse du joueur
 
+    // DID : Récuperer la vitesse du joueur
     PE_Vec2 velocity = body->GetLocalVelocity();
-    printf("%f\n", velocity);
 
     // Réveille les corps autour du joueur
     WakeUpSurroundings();
@@ -180,7 +179,7 @@ void Player::FixedUpdate()
     PE_Vec2 direction = PE_Vec2::right;
 
     // TODO : Donner une valeur cohérente au vecteur force
-    PE_Vec2 force = (200.0f * m_hDirection) * direction;
+    PE_Vec2 force = (20.0f * m_hDirection) * direction;
     body->ApplyForce(force);
 
 
@@ -198,6 +197,11 @@ void Player::FixedUpdate()
 
     // Définit la nouvelle vitesse du corps
     // TODO : Appliquer la nouvelle velocity au player
+    if (m_jump)
+    {
+        m_jump = false;
+        velocity.y = 15.0f;
+    }
 }
 
 void Player::OnRespawn()
