@@ -105,7 +105,7 @@ void Player::Render()
     // DID : Trouver le bon anchor
     //TODO : position du sprite
     m_animator.RenderCopyExF(
-        &rect, RE_Anchor::CENTER , 0.0f, Vec2(0.5f, 0.5f), flip
+        &rect, RE_Anchor::SOUTH , 0.0f, Vec2(0.5f, 0.5f), flip
     );
 }
 
