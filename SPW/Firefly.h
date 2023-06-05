@@ -15,5 +15,15 @@ public:
     virtual void Render() override;
     virtual void OnRespawn() override;
 
+    virtual void OnCollisionStay(GameCollision& collision) override;
     virtual void Collect(Collectable* Firefly);
+
+private:
+    RE_Animator m_animator;
+
+    enum class State
+    {
+        IDLE, PICKED
+    };
+    State m_state;
 };
