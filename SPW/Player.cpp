@@ -32,6 +32,7 @@ Player::Player(Scene &scene) :
     RE_TexAnim* fallingAnim = new RE_TexAnim(
         m_animator, "Falling", part
     );
+    fallingAnim->SetCycleCount(-1);
     fallingAnim->SetCycleTime(0.2f);
 
     // Couleur des colliders en debug
