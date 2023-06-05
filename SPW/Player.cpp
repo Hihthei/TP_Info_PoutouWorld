@@ -196,12 +196,13 @@ void Player::FixedUpdate()
     // La physique peut être différente si le joueur touche ou non le sol.
 
     // Définit la nouvelle vitesse du corps
-    // TODO : Appliquer la nouvelle velocity au player
+    // DID : Appliquer la nouvelle velocity au player
     if (m_jump)
     {
         m_jump = false;
         velocity.y = 15.0f;
     }
+    body->SetVelocity(velocity);
 }
 
 void Player::OnRespawn()
