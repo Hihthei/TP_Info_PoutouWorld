@@ -90,7 +90,7 @@ void Player::Render()
 
     // TODO : Trouver les bonnes diemnsions de l'affichage en fonction du sprite (dimensions en tuiles)
     rect.h = 1.0f * scale; 
-    rect.w = 2.0f * scale; 
+    rect.w = 1.0f * scale; 
     camera->WorldToView(GetPosition(), rect.x, rect.y);
 
     // Dessine l'animateur du joueur
