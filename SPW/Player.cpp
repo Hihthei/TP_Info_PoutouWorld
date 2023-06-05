@@ -27,6 +27,12 @@ Player::Player(Scene &scene) :
     idleAnim->SetCycleCount(0);
 
     // TODO : ajouter l'animation "Falling"
+    part = atlas->GetPart("Falling");
+    AssertNew(part);
+    RE_TexAnim* fallingAnim = new RE_TexAnim(
+        m_animator, "Falling", part
+    );
+    fallingAnim->SetCycleTime(0.2f);
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
