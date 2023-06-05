@@ -178,16 +178,26 @@ void Player::FixedUpdate()
     // Définit la force d'accélération horizontale du joueur
     PE_Vec2 direction = PE_Vec2::right;
 
-    // TODO : Donner une valeur cohérente au vecteur force
+    // DID : Donner une valeur cohérente au vecteur force
     PE_Vec2 force = (20.0f * m_hDirection) * direction;
     body->ApplyForce(force);
 
+    // DID : Limiter la vitesse horizontale
+    float maxHSpeed = 9.0f;
+    velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
-    // TODO : Limiter la vitesse horizontale
+    // DID : Ajouter un jump avec une vitesse au choix
+    if (m_jump)
+    {
+        m_jump = false;
+        velocity.y = 15.0f;
+    }
 
-    // TODO : Ajouter un jump avec une vitesse au choix
-
-    // TODO : Rebond sur les ennemis
+    // DID : Rebond sur les ennemis
+    if (m_bounce) {
+        m_bounce = false;
+        velocity.y = 15.0f;
+    }
 
     // Remarques :
     // Le facteur de gravité peut être modifié avec l'instruction
@@ -197,11 +207,6 @@ void Player::FixedUpdate()
 
     // Définit la nouvelle vitesse du corps
     // DID : Appliquer la nouvelle velocity au player
-    if (m_jump)
-    {
-        m_jump = false;
-        velocity.y = 15.0f;
-    }
     body->SetVelocity(velocity);
 }
 
