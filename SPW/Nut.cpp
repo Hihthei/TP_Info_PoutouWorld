@@ -69,17 +69,9 @@ void Nut::FixedUpdate()
         return;
     }
 
-    if (body->IsAwake() == false || m_state == State::DYING)
+    if (body->IsAwake() == false)
     {
-        // Ne met pas à jour la noisette si elle est endormie ou morte
-        // Le joueur est loin d'elle et elle n'est plus visible par la caméra.
-        printf("0\n");
-        return;
-    }
-
-    if (body->IsAwake() == true)
-    {
-        printf("1\n");
+        m_state = State::IDLE;
         return;
     }
 
@@ -94,20 +86,8 @@ void Nut::FixedUpdate()
 
     float dist = PE_Distance(position, player->GetPosition());
 
-<<<<<<< Updated upstream
-    if (dist > 5.0f)
-=======
-    if (dist > 10.0f)
->>>>>>> Stashed changes
-    {
-        // La distance entre de joueur et la noisette vient de dépasser 24 tuiles.
-        // On endort la noisette pour ne plus la simuler dans le moteur physique.
-        body->SetAwake(false);
-        m_state = State::IDLE;
-    }
-<<<<<<< Updated upstream
     // DID : Mettre la noisette en mouvement à l'approche du joueur
-    else if (dist <= 5.0f && m_state == State::IDLE && position == GetStartPosition())
+    /*if (dist <= 5.0f && m_state == State::IDLE && position == GetStartPosition())
     {
         body->SetAwake(true);
         m_state = State::ATTACKING;
@@ -131,15 +111,23 @@ void Nut::FixedUpdate()
             body->SetAwake(false);
             m_state = State::IDLE;
         }
-    }  
-=======
+    }  */
 
-    // TODO : Mettre la noisette en mouvement à l'approche du joueur
-    if (dist < 1.0f)
+    if (dist > 6.0f)
     {
-        body->SetAwake(true);
+        body->SetAwake(false);
+        return;
     }
->>>>>>> Stashed changes
+    else if (dist <= 6.0f && m_state == State::IDLE)
+    {
+        // Le joueur est à moins de 5 tuiles de la noisette
+        m_state = State::SPINNING;
+        body->SetVelocity(PE_Vec2(-3.0f, 10.0f));
+        body->SetAwake(false);
+    } 
+
+        // TODO : Mettre la noisette en mouvement à l'approche du joueur
+       
 }
 
 void Nut::Render()
