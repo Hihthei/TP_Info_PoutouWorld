@@ -26,7 +26,7 @@ Player::Player(Scene &scene) :
     );
     idleAnim->SetCycleCount(0);
 
-    // TODO : ajouter l'animation "Falling"
+    // DID : ajouter l'animation "Falling"
     part = atlas->GetPart("Falling");
     AssertNew(part);
     RE_TexAnim* fallingAnim = new RE_TexAnim(
@@ -63,7 +63,7 @@ void Player::Start()
     // Création du collider
     PE_ColliderDef colliderDef;
 
-    // TODO : Donner une taille normale à la capsule
+    // DID : Donner une taille normale à la capsule
     PE_CapsuleShape capsule(PE_Vec2(-0.05f, -0.25f), PE_Vec2(0.05f, 0.20f), 0.35f);
     colliderDef.friction = 1.0f;
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
@@ -78,9 +78,10 @@ void Player::Update()
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
     
-	// TODO : Mettre à jour l'état du joueur en fonction des contrôles de jump
+	// DID : Mettre à jour l'état du joueur en fonction des contrôles de jump
 
     m_hDirection = controls.hAxis;
+    m_jump = controls.jumpPressed;
 }
 
 void Player::Render()
