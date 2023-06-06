@@ -238,6 +238,8 @@ void Player::OnRespawn()
     m_heartCount = 2;
     m_state = State::IDLE;
     m_hDirection = 0.0f;
+    m_fireflyCount = 0;
+
     m_facingRight = true;
     m_bounce = false;
     m_jump = false;

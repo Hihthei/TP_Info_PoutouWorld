@@ -48,7 +48,7 @@ void Firefly::Start()
 
     // Crée le collider
     PE_ColliderDef colliderDef;
-    PE_CircleShape circle(PE_Vec2::zero, 0.25f);
+    PE_CircleShape circle(PE_Vec2(-0.1f, 0.5f), 0.25f);
     colliderDef.isTrigger = true;
     colliderDef.filter.categoryBits = CATEGORY_COLLECTABLE;
     colliderDef.filter.maskBits = CATEGORY_PLAYER;
