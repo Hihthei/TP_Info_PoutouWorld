@@ -151,7 +151,6 @@ void Player::FixedUpdate()
         // Le rayon gauche à touché le sol
         m_onGround = true;
         gndNormal = hitL.normal;
-        printf("ground\n");
     }
     if (hitR.collider != NULL)
     {
