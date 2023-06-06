@@ -2,6 +2,7 @@
 #include "StaticMap.h"
 #include "Brick.h"
 #include "mouvante1.h"
+#include "mouvante2.h"
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
@@ -231,6 +232,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 // creer une petite plateforme mouvante
                 mouvante1* Mouvante1 = new mouvante1(scene);
                 Mouvante1->SetStartPosition(position);
+                break;
+            }
+            case 'M':
+            {
+                // creer une grande plateforme mouvante
+                mouvante2* Mouvante2 = new mouvante2(scene);
+                Mouvante2->SetStartPosition(position);
                 break;
             }
             default:

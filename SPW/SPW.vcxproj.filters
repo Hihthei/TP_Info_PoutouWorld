@@ -188,6 +188,9 @@
     <ClCompile Include="monvante1.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="mouvante2.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -323,6 +326,9 @@
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClInclude>
     <ClInclude Include="mouvante1.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="mouvante2.h">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClInclude>
   </ItemGroup>

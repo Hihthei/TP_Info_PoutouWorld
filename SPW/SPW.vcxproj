@@ -165,6 +165,7 @@
     <ClCompile Include="MainCamera.cpp" />
     <ClCompile Include="monvante1.cpp" />
     <ClCompile Include="MouseInput.cpp" />
+    <ClCompile Include="mouvante2.cpp" />
     <ClCompile Include="Nut.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="MainCamera.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="mouvante1.h" />
+    <ClInclude Include="mouvante2.h" />
     <ClInclude Include="Nut.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="PauseMenu.h" />
