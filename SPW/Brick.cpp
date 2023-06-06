@@ -84,9 +84,10 @@ void Brick::OnCollisionEnter(GameCollision &collision)
             return;
         }
         float angle = PE_AngleDeg(manifold.normal, PE_Vec2::down);
-        if (fabsf(angle) > PLAYER_DAMAGE_ANGLE)
+        if (fabsf(angle) > 125)
         {
-            player->Damage();
+            SetEnabled(false);
+            SetToRespawn(true);
         }
 
         return;
