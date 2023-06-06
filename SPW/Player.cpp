@@ -35,6 +35,16 @@ Player::Player(Scene &scene) :
     fallingAnim->SetCycleCount(-1);
     fallingAnim->SetCycleTime(0.2f);
 
+    // DID : ajouter l'animation "Running"
+    part = atlas->GetPart("Running");
+    AssertNew(part);
+    RE_TexAnim* runningAnim = new RE_TexAnim(
+        m_animator, "Running", part
+    );
+    runningAnim->SetCycleCount(-1);
+    runningAnim->SetCycleTime(0.3f);
+
+
     // Couleur des colliders en debug
     m_debugColor.r = 255;
     m_debugColor.g = 0;
@@ -75,6 +85,8 @@ void Player::Start()
     bool m_facingRight = true;
     bool m_stateSwitchRunning = false;
     bool m_stateRunning = false;
+    bool m_drift = false;
+    m_animSpeedValue = 0.3f;
 }
 
 void Player::Update()
@@ -101,7 +113,7 @@ void Player::Render()
     m_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    SDL_RendererFlip flip = m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
     SDL_FRect rect = { 0 };
 
     // DID : Trouver les bonnes diemnsions de l'affichage en fonction du sprite (dimensions en tuiles)
@@ -173,7 +185,12 @@ void Player::FixedUpdate()
     // DID : Ajouter la gestion des animations Idle et Falling
     if (m_onGround)
     {
-        if (m_state != State::IDLE)
+        if (m_state != State::RUNNING && m_hDirection > 0.0f)
+        {
+            m_state = State::RUNNING;
+            m_animator.PlayAnimation("Running");
+        }
+        else if (m_state != State::IDLE && m_hDirection == 0.0f)
         {
             m_state = State::IDLE;
             m_animator.PlayAnimation("Idle");
@@ -194,15 +211,24 @@ void Player::FixedUpdate()
     // *  0.0f si le joueur n'accélère pas ;
     // * +1.0f si le joueur accélère vers la droite ;
     // * -1.0f si le joueur accélère vers la gauche.
+
+
+    m_timerSpeed += m_scene.GetFixedTimeStep();
+
     if (m_hDirection == 0.0f)
     {
+        m_state = State::IDLE;
+
         m_speed = 8.0f;
-        m_facingRight = true;
     }
     else if (m_hDirection > 0.0f)
     {
+        m_state = State::RUNNING;
+
         if (m_facingRight)
             m_stateSwitchRunning = false;
+
+        m_facingRight = true;
 
         if (m_stateSwitchRunning)
         {
@@ -210,11 +236,16 @@ void Player::FixedUpdate()
             m_facingRight = true;
             m_stateSwitchRunning = false;
         }
-        else
+        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_onGround)
+        {
             m_speed += m_ACCELERATION;
+            m_timerSpeed = 0.0f;
+        }
     }
     else if (m_hDirection < 0.0f)
     {
+        m_state = State::RUNNING;
+
         if (m_facingRight)
         {
             m_facingRight = false;
@@ -227,12 +258,13 @@ void Player::FixedUpdate()
             m_facingRight = false;
             m_stateSwitchRunning = false;
         }
-        else
+        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_onGround)
+        {
             m_speed += m_ACCELERATION;
-//        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+            m_timerSpeed = 0.0f;
+        }
     }
 
-    printf("je crous à : %.1f f par seconde !\n", m_speed);
 
     //--------------------------------------------------------------------------
     // Modification de la vitesse et application des forces
@@ -246,7 +278,7 @@ void Player::FixedUpdate()
     body->ApplyForce(force);
 
     // DID : Limiter la vitesse horizontale
-    float maxHSpeed = 9.0f;
+    float maxHSpeed = 20.0f;
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
     // DID : Ajouter un jump avec une vitesse au choix

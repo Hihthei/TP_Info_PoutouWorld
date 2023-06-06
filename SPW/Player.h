@@ -43,7 +43,9 @@ private:
 
     float m_hDirection;
     float m_speed;
-    const float m_ACCELERATION = 0.5f;
+    const float m_ACCELERATION = 0.0075f;
+    float m_timerSpeed;
+    float m_animSpeedValue;
 
     //vrai -> il vient de changer de sens
     //faux -> il était déjà dans ce sens
