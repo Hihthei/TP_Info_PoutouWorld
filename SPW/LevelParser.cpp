@@ -211,6 +211,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 firefly->SetStartPosition(position);
                 break;
             }
+            case 'b':
+            {
+                // creer une brick cassable
+                Brick* brick = new Brick(scene);
+                brick->SetStartPosition(position);
+                break;
+            }
             default:
                 break;
             }
