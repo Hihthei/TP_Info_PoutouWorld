@@ -43,6 +43,7 @@ private:
 
     float m_hDirection;
     bool m_jump;
+    bool m_jumpHold;
     bool m_onGround;
     bool m_bounce;
     bool m_facingRight;
