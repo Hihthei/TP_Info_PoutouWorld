@@ -13,6 +13,7 @@ Nut::Nut(Scene &scene) :
     RE_AtlasPart* part;
     RE_TexAnim* idleAnim;
     RE_TexAnim* spinAnim;
+    RE_TexAnim* dyAnim;
 
     // Animation "Idle"
     part = atlas->GetPart("NutIdle");
@@ -26,6 +27,14 @@ Nut::Nut(Scene &scene) :
     spinAnim = new RE_TexAnim(m_animator, "Spinning", part);
     spinAnim->SetCycleCount(0);
     spinAnim->SetCycleTime(0.4f);
+
+    // Animation "Dying"
+    part = atlas->GetPart("NutDying");
+    AssertNew(part);
+    dyAnim = new RE_TexAnim(m_animator, "Dying", part);
+    dyAnim->SetCycleCount(0);
+    dyAnim->SetCycleTime(0.4f);
+
 
 }
 
@@ -158,7 +167,13 @@ void Nut::FixedUpdate()
         }
     } 
 
-        // TODO : Mettre la noisette en mouvement à l'approche du joueur
+    if (m_state == State::DYING2)
+    {
+
+        body->SetVelocity(PE_Vec2(0.0f, 7.0f));
+        m_animator.PlayAnimation("Dying");
+        m_state = State::DYING;
+    }
        
 }
 
@@ -200,7 +215,7 @@ void Nut::Damage(GameBody *damager)
     Player* player = dynamic_cast<Player*>(damager);
     if (player) player->Bounce();
     m_animator.PlayAnimation("Idle");
-    m_state = State::DYING;
+    m_state = State::DYING2;
 }
 
 void Nut::OnCollisionStay(GameCollision &collision)
@@ -212,6 +227,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
 
     if (m_state == State::DYING)
     {
+        
         collision.SetEnabled(false);
         return;
     }

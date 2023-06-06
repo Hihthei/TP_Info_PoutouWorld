@@ -31,7 +31,10 @@ void ApplicationInput::OnEventProcess(SDL_Event evt)
         {
         case SDL_SCANCODE_ESCAPE:
             // Touche pour quiter le jeu
-            quitPressed = true;
+            if (pausePressed == true)
+                quitPressed = true;
+            else
+                pausePressed = true;
             break;
 
         case SDL_SCANCODE_RETURN:
