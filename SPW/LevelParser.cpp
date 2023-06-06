@@ -198,6 +198,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 levelEnd->SetStartPosition(position);
                 break;
             }
+            case 'C':
+            {
+                //creer un checkpoint
+                Checkpoint* checkpoint = new Checkpoint(scene);
+                checkpoint->SetStartPosition(position);
+                break;
+            }
             case 'e':
             {
                 Nut *nut = new Nut(scene);
