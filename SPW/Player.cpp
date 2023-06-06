@@ -81,7 +81,9 @@ void Player::Update()
 	// DID : Mettre à jour l'état du joueur en fonction des contrôles de jump
 
     m_hDirection = controls.hAxis;
+
     m_jump = controls.jumpPressed;
+    m_jumpHold = controls.jumpDown;
 }
 
 void Player::Render()
@@ -203,7 +205,7 @@ void Player::FixedUpdate()
     PE_Vec2 direction = PE_Vec2::right;
 
     // DID : Donner une valeur cohérente au vecteur force
-    PE_Vec2 force = (20.0f * m_hDirection) * direction;
+    PE_Vec2 force = (13.0f * m_hDirection) * direction;
     body->ApplyForce(force);
 
     // DID : Limiter la vitesse horizontale
@@ -211,11 +213,18 @@ void Player::FixedUpdate()
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
     // DID : Ajouter un jump avec une vitesse au choix
-    if (m_jump)
+    if (m_jump && m_onGround)
     {
         m_jump = false;
-        velocity.y = 15.0f;
+        velocity.y = 11.0f;
     }
+
+    body->SetGravityScale(1.0f);
+
+    if (m_jumpHold)
+        body->SetGravityScale(0.4f);
+
+
 
     // DID : Rebond sur les ennemis
     if (m_bounce)
