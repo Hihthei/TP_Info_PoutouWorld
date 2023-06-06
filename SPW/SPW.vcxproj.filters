@@ -185,6 +185,9 @@
     <ClCompile Include="Firefly.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClCompile>
+    <ClCompile Include="monvante1.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -318,6 +321,9 @@
     </ClInclude>
     <ClInclude Include="Firefly.h">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="mouvante1.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

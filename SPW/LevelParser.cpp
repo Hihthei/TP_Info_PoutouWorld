@@ -1,6 +1,7 @@
 #include "LevelParser.h"
 #include "StaticMap.h"
 #include "Brick.h"
+#include "mouvante1.h"
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
@@ -223,6 +224,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 // creer une brick cassable
                 Brick* brick = new Brick(scene);
                 brick->SetStartPosition(position);
+                break;
+            }
+            case 'm':
+            {
+                // creer une petite plateforme mouvante
+                mouvante1* Mouvante1 = new mouvante1(scene);
+                Mouvante1->SetStartPosition(position);
                 break;
             }
             default:

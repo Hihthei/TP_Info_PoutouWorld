@@ -163,6 +163,7 @@
     <ClCompile Include="LevelSelection.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainCamera.cpp" />
+    <ClCompile Include="monvante1.cpp" />
     <ClCompile Include="MouseInput.cpp" />
     <ClCompile Include="Nut.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="LevelSelection.h" />
     <ClInclude Include="MainCamera.h" />
     <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="mouvante1.h" />
     <ClInclude Include="Nut.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="PauseMenu.h" />
