@@ -86,7 +86,7 @@ void Player::Start()
     bool m_stateSwitchRunning = false;
     bool m_stateRunning = false;
     bool m_drift = false;
-    m_animSpeedValue = 0.3f;
+    m_animSpeedValue = 0.8f;
 }
 
 void Player::Update()
@@ -185,10 +185,10 @@ void Player::FixedUpdate()
     // DID : Ajouter la gestion des animations Idle et Falling
     if (m_onGround)
     {
-        if (m_state != State::RUNNING && m_hDirection > 0.0f)
+        if (m_state != State::RUNNING && (m_hDirection > 0.0f || m_hDirection < 0.0f))
         {
             m_state = State::RUNNING;
-            m_animator.PlayAnimation("Running");
+            m_animator.PlayAnimation("Running");        
         }
         else if (m_state != State::IDLE && m_hDirection == 0.0f)
         {
@@ -204,6 +204,8 @@ void Player::FixedUpdate()
             m_animator.PlayAnimation("Falling");
         }
     }
+
+    
     
     //TODO
     // Orientation du joueur
@@ -219,7 +221,8 @@ void Player::FixedUpdate()
     {
         m_state = State::IDLE;
 
-        m_speed = 8.0f;
+        m_speed = 5.0f;
+        m_animSpeedValue = 0.5f;
     }
     else if (m_hDirection > 0.0f)
     {
@@ -232,14 +235,23 @@ void Player::FixedUpdate()
 
         if (m_stateSwitchRunning)
         {
-            m_speed = 8.0f;
+            m_speed = 5.0f;
+            m_animSpeedValue = 0.5f;
             m_facingRight = true;
             m_stateSwitchRunning = false;
         }
-        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_onGround)
+        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_animSpeedValue <= 1.5f && m_onGround)
         {
-            m_speed += m_ACCELERATION;
+            m_speed += 0.1f;
             m_timerSpeed = 0.0f;
+
+            // On met à jour l'animation en fonction de la vitesse
+            m_animSpeedValue += 0.01;
+
+            printf("anim speed : %.3f // speed : %0.3f\n", m_animSpeedValue, m_speed);
+
+            RE_Animation* anim = m_animator.GetAnimation("Running");
+            anim->SetSpeed(m_animSpeedValue);
         }
     }
     else if (m_hDirection < 0.0f)
@@ -254,17 +266,26 @@ void Player::FixedUpdate()
 
         if (m_stateSwitchRunning)
         {
-            m_speed = 8.0f;
+            m_speed = 5.0f;
+            m_animSpeedValue = 0.5f;
             m_facingRight = false;
             m_stateSwitchRunning = false;
         }
-        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_onGround)
+        else if (m_timerSpeed > 0.7 && m_speed <= 20.0f && m_animSpeedValue <= 2.8f && m_onGround)
         {
-            m_speed += m_ACCELERATION;
+            m_speed += 0.1f;
             m_timerSpeed = 0.0f;
+
+            // On met à jour l'animation en fonction de la vitesse
+            m_animSpeedValue += 0.01;
+
+            printf("anim speed : %.3f // speed : %0.3f\n", m_animSpeedValue, m_speed);
+
+            RE_Animation* anim = m_animator.GetAnimation("Running");
+            anim->SetSpeed(m_animSpeedValue);
         }
     }
-
+    
 
     //--------------------------------------------------------------------------
     // Modification de la vitesse et application des forces

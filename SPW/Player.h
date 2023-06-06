@@ -43,7 +43,6 @@ private:
 
     float m_hDirection;
     float m_speed;
-    const float m_ACCELERATION = 0.0075f;
     float m_timerSpeed;
     float m_animSpeedValue;
 
