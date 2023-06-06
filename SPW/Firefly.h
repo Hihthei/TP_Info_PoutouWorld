@@ -11,7 +11,6 @@ public:
     virtual ~Firefly();
 
     virtual void Start() override;
-//    virtual void Update() override;
     virtual void Render() override;
     virtual void OnRespawn() override;
 
@@ -20,6 +19,11 @@ public:
 
 private:
     RE_Animator m_animator;
+
+    RE_Anchor m_currentAnimation;
+
+    RE_Timer timerFirefly;
+    float timeDelta;
 
     enum class State
     {

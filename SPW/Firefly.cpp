@@ -13,11 +13,25 @@ Firefly::Firefly(Scene& scene, Layer layer) :
     AssertNew(atlas);
 
     // Animation "Idle"
-    RE_AtlasPart *part = atlas->GetPart("Firefly");
+    RE_AtlasPart* part = atlas->GetPart("Firefly");
     AssertNew(part);
-    RE_TexAnim *flyingAnim = new RE_TexAnim(m_animator, "Idle", part);
+    RE_TexAnim* flyingAnim = new RE_TexAnim(m_animator, "Idle", part);
     flyingAnim->SetCycleCount(-1);
     flyingAnim->SetCycleTime(0.3f);
+
+    // Animation "MoveX"
+    RE_ShiftAnim* ShiftingAnimX = new RE_ShiftAnim(m_animator, "MoveX", Vec2(-12.5f, 0), Vec2(12.5f, 0));
+    ShiftingAnimX->SetCycleCount(-1);
+    ShiftingAnimX->SetCycleTime(2.0f);
+    ShiftingAnimX->AddFlags(RE_AnimFlag::ALTERNATE);
+    ShiftingAnimX->SetEasing(RE_EasingFct_Cos);
+
+    // Animation "MoveY"
+    RE_ShiftAnim* ShiftingAnimY = new RE_ShiftAnim(m_animator, "MoveY", Vec2(0, -5.0f), Vec2(0, 5.0f));
+    ShiftingAnimY->SetCycleCount(-1);
+    ShiftingAnimY->SetCycleTime(1.0f);
+    ShiftingAnimY->AddFlags(RE_AnimFlag::ALTERNATE);
+    ShiftingAnimY->SetEasing(RE_EasingFct_Cos);
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -31,24 +45,27 @@ Firefly::~Firefly()
 
 void Firefly::Start()
 {
+    timerFirefly.Start();
 
     SetToRespawn(true);
 
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Idle");
+    m_animator.PlayAnimation("MoveX");
+    m_animator.PlayAnimation("MoveY");
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
-    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.5f);
     bodyDef.name = "Firefly";
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
     PE_ColliderDef colliderDef;
-    PE_CircleShape circle(PE_Vec2(-0.1f, 0.5f), 0.25f);
+    PE_CircleShape circle(PE_Vec2(0.0f, 0.0f), 0.25f);
     colliderDef.isTrigger = true;
     colliderDef.filter.categoryBits = CATEGORY_COLLECTABLE;
     colliderDef.filter.maskBits = CATEGORY_PLAYER;
@@ -56,30 +73,6 @@ void Firefly::Start()
     PE_Collider* collider = body->CreateCollider(colliderDef);
 }
 
-/*
-void Firefly::Update()
-{
-    //TODO
-    PE_Body* body = GetBody();
-    PE_Vec2 position = body->GetPosition();
-
-    //Si la luciole est encore en vie
-    if (body->IsAwake() == true)
-    {
-        m_state = State::IDLE;
-        return;
-    }
-
-    LevelScene* levelScene = dynamic_cast<LevelScene*>(&m_scene);
-    if (levelScene == nullptr)
-    {
-        assert(false);
-        return;
-    }
-
-    Player* player = levelScene->GetPlayer();
-}
-*/
 
 void Firefly::Render()
 {
@@ -93,7 +86,9 @@ void Firefly::Render()
     rect.h = 1.0f * scale;
     rect.w = 1.0f * scale;
     camera->WorldToView(GetPosition(), rect.x, rect.y);
-    m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
+
+    m_currentAnimation = RE_Anchor::CENTER;
+    m_animator.RenderCopyF(&rect, m_currentAnimation);
 }
 
 void Firefly::OnRespawn()

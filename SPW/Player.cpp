@@ -103,7 +103,7 @@ void Player::Render()
 
     // Dessine l'animateur du joueur
     // DID : Trouver le bon anchor
-    //TODO : position du sprite
+    // DID : position du sprite
     m_animator.RenderCopyExF(
         &rect, RE_Anchor::SOUTH , 0.0f, Vec2(0.5f, 0.5f), flip
     );
@@ -185,7 +185,14 @@ void Player::FixedUpdate()
     // *  0.0f si le joueur n'accélère pas ;
     // * +1.0f si le joueur accélère vers la droite ;
     // * -1.0f si le joueur accélère vers la gauche.
-    m_facingRight = true;
+    if (m_hDirection == 0.0f || m_hDirection > 0.0f)
+        m_facingRight = true;
+    else if (m_hDirection < 0.0f)
+    {
+        m_facingRight = false;
+        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+    }
+
 
     //--------------------------------------------------------------------------
     // Modification de la vitesse et application des forces
