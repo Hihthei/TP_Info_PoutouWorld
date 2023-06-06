@@ -1,4 +1,5 @@
 #include "Firefly.h"
+#include "Collectable.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "LevelScene.h"
@@ -140,7 +141,7 @@ void OnCollisionStay(GameCollision& collision)
 }
 */
 
-void Firefly::Collect(Collectable* Firefly, GameBody* collector)
+void Firefly::Collect(GameBody* collector)
 {
     Player* player = dynamic_cast<Player*>(collector);
     if (player == nullptr)

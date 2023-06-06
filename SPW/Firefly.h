@@ -16,7 +16,7 @@ public:
     virtual void OnRespawn() override;
 
 //    virtual void OnCollisionStay(GameCollision& collision) override;
-    virtual void Collect(Collectable* Firefly, GameBody* collector);
+    virtual void Collect(GameBody* collector);
 
 private:
     RE_Animator m_animator;
