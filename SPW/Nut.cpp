@@ -131,7 +131,7 @@ void Nut::FixedUpdate()
 
         return;
     }
-    if (dist <= 6.0f)
+    if (dist <= 14.0f)
     {
         
         // Le joueur est à moins de 5 tuiles de la noisette pour la premiere fois
@@ -192,7 +192,7 @@ void Nut::Damage(GameBody *damager)
     // DID
     Player* player = dynamic_cast<Player*>(damager);
     if (player) player->Bounce();
-    m_state = State::SPINNING;
+    m_animator.PlayAnimation("Idle");
     m_state = State::DYING;
 }
 
