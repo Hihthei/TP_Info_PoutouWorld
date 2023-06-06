@@ -169,7 +169,6 @@ void Nut::FixedUpdate()
 
     if (m_state == State::DYING2)
     {
-
         body->SetVelocity(PE_Vec2(0.0f, 7.0f));
         m_animator.PlayAnimation("Dying");
         m_state = State::DYING;
@@ -244,7 +243,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
         float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
         if (fabsf(angle) > PLAYER_DAMAGE_ANGLE)
         {
-            player->Damage();
+            player->Damage(-1);
         }
         
         return;

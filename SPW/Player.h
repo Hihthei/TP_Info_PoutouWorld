@@ -25,8 +25,8 @@ public:
     int GetHeartCount() const;
     int GetLifeCount() const;
     void AddFirefly(int count);
-    void AddHeart();
-    void Damage();
+    void AddHeart(int count);
+    void Damage(int count);
     void Kill();
     void Bounce();
 
@@ -56,7 +56,7 @@ private:
     bool m_bounce;
     bool m_facingRight;
 
-    int m_lifeCount;
+    int m_lifeCount = 3;
     int m_heartCount;
     int m_fireflyCount;
 };

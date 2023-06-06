@@ -81,6 +81,8 @@ void Player::Start()
     PE_Collider *collider = body->CreateCollider(colliderDef);
 
     // Mise à jour des variables
+    m_heartCount = 3;
+
     m_speed = 8.0f;
     bool m_facingRight = true;
     bool m_stateSwitchRunning = false;
@@ -131,6 +133,7 @@ void Player::Render()
 
 void Player::FixedUpdate()
 {
+
     PE_Body *body = GetBody();
     PE_Vec2 position = body->GetPosition();
 
@@ -139,6 +142,18 @@ void Player::FixedUpdate()
 
     // Réveille les corps autour du joueur
     WakeUpSurroundings();
+
+    // Animation de mort si le joueur meurt
+    if (m_state == State::DEAD)
+    {
+        //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
+        
+        body->SetVelocity(PE_Vec2(0.7f, 5.0f));
+        m_animator.PlayAnimation("Dying");
+
+        if(body->GetPosition().y < -2.0f)
+            Kill();
+    }
 
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
@@ -219,15 +234,11 @@ void Player::FixedUpdate()
 
     if (m_hDirection == 0.0f)
     {
-        m_state = State::IDLE;
-
         m_speed = 5.0f;
         m_animSpeedValue = 0.5f;
     }
     else if (m_hDirection > 0.0f)
     {
-        m_state = State::RUNNING;
-
         if (m_facingRight)
             m_stateSwitchRunning = false;
 
@@ -246,9 +257,7 @@ void Player::FixedUpdate()
             m_timerSpeed = 0.0f;
 
             // On met à jour l'animation en fonction de la vitesse
-            m_animSpeedValue += 0.01;
-
-            printf("anim speed : %.3f // speed : %0.3f\n", m_animSpeedValue, m_speed);
+            m_animSpeedValue += 0.01f;
 
             RE_Animation* anim = m_animator.GetAnimation("Running");
             anim->SetSpeed(m_animSpeedValue);
@@ -256,8 +265,6 @@ void Player::FixedUpdate()
     }
     else if (m_hDirection < 0.0f)
     {
-        m_state = State::RUNNING;
-
         if (m_facingRight)
         {
             m_facingRight = false;
@@ -277,9 +284,7 @@ void Player::FixedUpdate()
             m_timerSpeed = 0.0f;
 
             // On met à jour l'animation en fonction de la vitesse
-            m_animSpeedValue += 0.01;
-
-            printf("anim speed : %.3f // speed : %0.3f\n", m_animSpeedValue, m_speed);
+            m_animSpeedValue += 0.01f;
 
             RE_Animation* anim = m_animator.GetAnimation("Running");
             anim->SetSpeed(m_animSpeedValue);
@@ -455,15 +460,28 @@ void Player::AddFirefly(int count)
     m_fireflyCount += count;
 }
 
-void Player::AddHeart()
+void Player::AddHeart(int count)
 {
-    m_heartCount++;
+    m_heartCount += count;
 }
 
-void Player::Damage()
+void Player::Damage(int count)
 {
     // Méthode appelée par un ennemi qui touche le joueur
-    Kill();
+    AddHeart(count);
+    printf("\n%d pv restants\n", m_heartCount);
+
+    if (m_heartCount == 0)
+    {
+        m_state = State::DEAD;
+        m_lifeCount--;
+        printf("\n%d vies restantes\n", m_lifeCount);
+    }
+
+    if (m_lifeCount == 0);
+        //TODO -> retourner au menu
+
+    // TODO -> affichage graphique
 }
 
 void Player::Kill()
