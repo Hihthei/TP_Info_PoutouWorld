@@ -1,9 +1,27 @@
 #include "Firefly.h"
 #include "Scene.h"
+#include "Camera.h"
+#include "LevelScene.h"
+#include "Graphics.h"
 
 Firefly::Firefly(Scene& scene, Layer layer) :
     Collectable(scene, layer)
 {
+    m_name = "Firefly";
+    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
+    AssertNew(atlas);
+
+    // Animation "Idle"
+    RE_AtlasPart *part = atlas->GetPart("Firefly");
+    AssertNew(part);
+    RE_TexAnim *flyingAnim = new RE_TexAnim(m_animator, "Idle", part);
+    flyingAnim->SetCycleCount(-1);
+    flyingAnim->SetCycleTime(0.3f);
+
+    // Couleur des colliders en debug
+    m_debugColor.r = 255;
+    m_debugColor.g = 0;
+    m_debugColor.b = 255;
 }
 
 Firefly::~Firefly()
@@ -24,25 +42,20 @@ void Firefly::Start()
     bodyDef.type = PE_BodyType::STATIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
     bodyDef.name = "Firefly";
-    bodyDef.damping.SetZero();
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_CircleShape circle(PE_Vec2(0.0f, 0.15f), 0.15f);
     PE_ColliderDef colliderDef;
-    colliderDef.friction = 0.0f;
+    PE_CircleShape circle(PE_Vec2::zero, 0.25f);
+    colliderDef.isTrigger = true;
     colliderDef.filter.categoryBits = CATEGORY_COLLECTABLE;
     colliderDef.filter.maskBits = CATEGORY_PLAYER;
     colliderDef.shape = &circle;
     PE_Collider* collider = body->CreateCollider(colliderDef);
-
-    // Endort le corps
-    // Permet d'optimiser le calcul de la physique,
-    // seuls les corps proches du joueur sont simulés
-    body->SetAwake(false);
 }
 
+/*
 void Firefly::Update()
 {
     //TODO
@@ -65,6 +78,7 @@ void Firefly::Update()
 
     Player* player = levelScene->GetPlayer();
 }
+*/
 
 void Firefly::Render()
 {
@@ -85,19 +99,14 @@ void Firefly::OnRespawn()
 {
     m_state = State::IDLE;
 
-    SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
-
-    PE_Body* body = GetBody();
-    body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
-    body->SetVelocity(PE_Vec2::zero);
-    body->ClearForces();
 
     m_animator.StopAnimations();
     m_animator.PlayAnimation("Idle");
 }
 
+/*
 void OnCollisionStay(GameCollision& collision)
 {
     PE_Manifold& manifold = collision.manifold;
@@ -129,12 +138,16 @@ void OnCollisionStay(GameCollision& collision)
         return;
     }
 }
+*/
 
-void Firefly::Collect(Collectable* Firefly)
+void Firefly::Collect(Collectable* Firefly, GameBody* collector)
 {
-    Player* player = dynamic_cast<Player*>(damager);
-    if (player)
-        player->Bounce();
+    Player* player = dynamic_cast<Player*>(collector);
+    if (player == nullptr)
+        return;
 
     m_state = State::PICKED;
+    SetToRespawn(true);
+    SetEnabled(false);
+    player->AddFirefly(1);
 }

@@ -11,12 +11,12 @@ public:
     virtual ~Firefly();
 
     virtual void Start() override;
-    virtual void Update() override;
+//    virtual void Update() override;
     virtual void Render() override;
     virtual void OnRespawn() override;
 
-    virtual void OnCollisionStay(GameCollision& collision) override;
-    virtual void Collect(Collectable* Firefly);
+//    virtual void OnCollisionStay(GameCollision& collision) override;
+    virtual void Collect(Collectable* Firefly, GameBody* collector);
 
 private:
     RE_Animator m_animator;

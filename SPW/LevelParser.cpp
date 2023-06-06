@@ -4,6 +4,7 @@
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
+#include "Firefly.h"
 #include "LevelEnd.h"
 #include "Bonus.h"
 #include "Camera.h"
@@ -206,6 +207,8 @@ void LevelParser::InitScene(LevelScene &scene) const
             case 'o':
             {
                 // TODO : Créer une luciolle
+                Firefly* firefly = new Firefly(scene, Layer::TERRAIN);
+                firefly->SetStartPosition(position);
                 break;
             }
             default:
