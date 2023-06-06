@@ -33,14 +33,6 @@ void Brick::Start()
 {
     SetToRespawn(true);
 
-    LevelScene* levelScene = dynamic_cast<LevelScene*>(&m_scene);
-    if (levelScene == nullptr)
-    {
-        assert(false);
-        return;
-    }
-    Player* player = levelScene->GetPlayer();
-
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Base");
 
@@ -60,7 +52,6 @@ void Brick::Start()
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.shape = &box;
     colliderDef.friction = 2.5f;
-    colliderDef.isTrigger = true;
     PE_Collider* collider = body->CreateCollider(colliderDef);
 }
 
@@ -92,8 +83,8 @@ void Brick::OnCollisionEnter(GameCollision &collision)
             assert(false);
             return;
         }
-        float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
-        if (fabsf(angle) < 2*PLAYER_DAMAGE_ANGLE)
+        float angle = PE_AngleDeg(manifold.normal, PE_Vec2::down);
+        if (fabsf(angle) < PLAYER_DAMAGE_ANGLE)
         {
             if (player) player;
         }
