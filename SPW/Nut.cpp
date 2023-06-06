@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "LevelScene.h"
 #include "Graphics.h"
-
 Nut::Nut(Scene &scene) :
     Enemy(scene), m_animator(), m_state(State::IDLE)
 {
@@ -68,6 +67,7 @@ void Nut::Start()
 
 void Nut::FixedUpdate()
 {
+    
     PE_Body *body = GetBody();
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
@@ -82,7 +82,7 @@ void Nut::FixedUpdate()
 
     if (body->IsAwake() == false)
     {
-        m_state = State::IDLE;
+        
         return;
     }
 
@@ -124,18 +124,31 @@ void Nut::FixedUpdate()
         }
     }  */
 
-    if (dist > 6.0f)
+    if (dist > 24.0f)
     {
         body->SetAwake(false);
+        
+
         return;
     }
-    else if (dist <= 6.0f && m_state == State::IDLE)
+    if (dist <= 6.0f)
     {
-        // Le joueur est à moins de 5 tuiles de la noisette
-        m_state = State::SPINNING;
-        m_animator.PlayAnimation("Spinning");
-        body->SetVelocity(PE_Vec2(-4.0f, 10.0f));
-        body->SetAwake(false);
+        
+        // Le joueur est à moins de 5 tuiles de la noisette pour la premiere fois
+        if (m_state == State::IDLE )
+        {
+            m_state = State::SPINNING;
+            m_animator.PlayAnimation("Spinning");
+            body->SetVelocity(PE_Vec2(-4.0f, 10.0f));
+            
+
+            m_state = State::SPINNING;
+        }
+        //le joueur est de nouveau proche de la noisette
+        else if(position.x <= ((GetStartPosition().x)-3.0f) && m_state != State::DYING )
+        {
+            body->SetVelocity(PE_Vec2(-4.0f, 0.0f));
+        }
     } 
 
         // TODO : Mettre la noisette en mouvement à l'approche du joueur
