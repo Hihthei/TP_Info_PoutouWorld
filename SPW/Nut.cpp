@@ -53,7 +53,7 @@ void Nut::Start()
     // Crée le collider
     PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
     PE_ColliderDef colliderDef;
-    colliderDef.friction = 0.005f;
+    colliderDef.friction = 0.000f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY ;
     colliderDef.filter.maskBits = CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &circle;
@@ -139,15 +139,22 @@ void Nut::FixedUpdate()
         {
             m_state = State::SPINNING;
             m_animator.PlayAnimation("Spinning");
-            body->SetVelocity(PE_Vec2(-4.0f, 10.0f));
+            if (player->GetPosition().x < position.x)
+                body->SetVelocity(PE_Vec2(-1.0f, 10.0f));
+            else
+                body->SetVelocity(PE_Vec2(1.0f, 10.0f));
+
             
 
             m_state = State::SPINNING;
         }
         //le joueur est de nouveau proche de la noisette
-        else if(position.x <= ((GetStartPosition().x)-3.0f) && m_state != State::DYING )
+        else if((position.x <= ((GetStartPosition().x)-0.5f) || position.x >= ((GetStartPosition().x) + 3.0f))&& m_state != State::DYING )
         {
-            body->SetVelocity(PE_Vec2(-4.0f, 0.0f));
+            if (player->GetPosition().x < position.x)
+                body->SetVelocity(PE_Vec2(-3.0f, 0.0f));
+            else
+                body->SetVelocity(PE_Vec2(3.0f, 0.0f));
         }
     } 
 
