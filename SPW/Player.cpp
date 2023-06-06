@@ -69,6 +69,12 @@ void Player::Start()
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
     colliderDef.shape = &capsule;
     PE_Collider *collider = body->CreateCollider(colliderDef);
+
+    // Mise à jour des variables
+    m_speed = 8.0f;
+    bool m_facingRight = true;
+    bool m_stateSwitchRunning = false;
+    bool m_stateRunning = false;
 }
 
 void Player::Update()
@@ -181,20 +187,52 @@ void Player::FixedUpdate()
             m_animator.PlayAnimation("Falling");
         }
     }
-
+    
+    //TODO
     // Orientation du joueur
     // Utilisez m_hDirection qui vaut :
     // *  0.0f si le joueur n'accélère pas ;
     // * +1.0f si le joueur accélère vers la droite ;
     // * -1.0f si le joueur accélère vers la gauche.
-    if (m_hDirection == 0.0f || m_hDirection > 0.0f)
+    if (m_hDirection == 0.0f)
+    {
+        m_speed = 8.0f;
         m_facingRight = true;
+    }
+    else if (m_hDirection > 0.0f)
+    {
+        if (m_facingRight)
+            m_stateSwitchRunning = false;
+
+        if (m_stateSwitchRunning)
+        {
+            m_speed = 8.0f;
+            m_facingRight = true;
+            m_stateSwitchRunning = false;
+        }
+        else
+            m_speed += m_ACCELERATION;
+    }
     else if (m_hDirection < 0.0f)
     {
-        m_facingRight = false;
-        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+        if (m_facingRight)
+        {
+            m_facingRight = false;
+            m_stateSwitchRunning = true;
+        }
+
+        if (m_stateSwitchRunning)
+        {
+            m_speed = 8.0f;
+            m_facingRight = false;
+            m_stateSwitchRunning = false;
+        }
+        else
+            m_speed += m_ACCELERATION;
+//        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
     }
 
+    printf("je crous à : %.1f f par seconde !\n", m_speed);
 
     //--------------------------------------------------------------------------
     // Modification de la vitesse et application des forces
@@ -204,7 +242,7 @@ void Player::FixedUpdate()
     PE_Vec2 direction = PE_Vec2::right;
 
     // DID : Donner une valeur cohérente au vecteur force
-    PE_Vec2 force = (13.0f * m_hDirection) * direction;
+    PE_Vec2 force = (m_speed * m_hDirection) * direction;
     body->ApplyForce(force);
 
     // DID : Limiter la vitesse horizontale

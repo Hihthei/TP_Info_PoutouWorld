@@ -42,6 +42,13 @@ private:
     RE_Animator m_animator;
 
     float m_hDirection;
+    float m_speed;
+    const float m_ACCELERATION = 0.5f;
+
+    //vrai -> il vient de changer de sens
+    //faux -> il était déjà dans ce sens
+    bool m_stateSwitchRunning;
+
     bool m_jump;
     bool m_jumpHold;
     bool m_onGround;
