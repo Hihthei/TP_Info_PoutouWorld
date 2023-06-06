@@ -22,25 +22,18 @@ Firefly::Firefly(Scene& scene, Layer layer) :
     // Animation "MoveX"
     RE_ShiftAnim* ShiftingAnimX = new RE_ShiftAnim(m_animator, "MoveX", Vec2(-12.5f, 0), Vec2(12.5f, 0));
     ShiftingAnimX->SetCycleCount(-1);
-    ShiftingAnimX->SetCycleTime(2.0f);
+    ShiftingAnimX->SetCycleTime(2.25f);
     ShiftingAnimX->AddFlags(RE_AnimFlag::ALTERNATE);
     ShiftingAnimX->SetEasing(RE_EasingFct_Cos);
 
-    // Animation "MoveYFirstPath"
-    RE_ShiftAnim* ShiftingAnimYFirstPath = new RE_ShiftAnim(m_animator, "MoveYFirstPath", Vec2(0, -5.0f), Vec2(0, 5.0f));
+    // Animation "MoveY"
+    RE_ShiftAnim* ShiftingAnimYFirstPath = new RE_ShiftAnim(m_animator, "MoveY", Vec2(0, -5.0f), Vec2(0, 5.0f));
     ShiftingAnimYFirstPath->SetCycleCount(-1);
-    ShiftingAnimYFirstPath->SetCycleTime(1.0f);
-    ShiftingAnimYFirstPath->SetDelay(1.0f);
+    ShiftingAnimYFirstPath->SetCycleTime(1.125f);
     ShiftingAnimYFirstPath->AddFlags(RE_AnimFlag::ALTERNATE);
     ShiftingAnimYFirstPath->SetEasing(RE_EasingFct_Cos);
 
-    // Animation "MoveYSecondPath"
-    RE_ShiftAnim* ShiftingAnimYSecondPath = new RE_ShiftAnim(m_animator, "MoveYSecondPath", Vec2(0, 5.0f), Vec2(0, -5.0f));
-    ShiftingAnimYSecondPath->SetCycleCount(-1);
-    ShiftingAnimYSecondPath->SetCycleTime(1.0f);
-    ShiftingAnimYSecondPath->SetDelay(1.0f);
-    ShiftingAnimYSecondPath->AddFlags(RE_AnimFlag::ALTERNATE);
-    ShiftingAnimYSecondPath->SetEasing(RE_EasingFct_Cos);
+
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -61,8 +54,7 @@ void Firefly::Start()
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Idle");
     m_animator.PlayAnimation("MoveX");
-    m_animator.PlayAnimation("MoveYFirstPath");
-//    m_animator.PlayAnimation("MoveYSecondPath");
+    m_animator.PlayAnimation("MoveY");
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
