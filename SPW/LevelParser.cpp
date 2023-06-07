@@ -280,6 +280,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 Lleft->SetStartPosition(position);
                 break;
             }
+            case 'B':
+            {
+                // creer un block bonus
+                Bonus* bonus = new Bonus(scene);
+                bonus->SetStartPosition(position);
+                break;
+            }
             default:
                 break;
             }

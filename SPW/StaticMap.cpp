@@ -87,16 +87,32 @@ void StaticMap::InitTiles()
                 {
                     tile.partIdx = 4;
                 }
+                else if (IsGround(x + 1, y) == false)
+                {
+                    if (IsGround(x - 1, y))
+                        tile.partIdx = 2;
+                    else tile.partIdx = 1;
+                }
+                else if (IsGround(x - 1, y) == false)
+                {
+                    if (IsGround(x + 1, y))
+                        tile.partIdx = 0;
+                    else tile.partIdx = 1;
+                }
                 else
                 {
                     tile.partIdx = 1;
                 }
                 break;
             case Tile::Type::STEEP_SLOPE_R:
-                tile.partIdx = 10;
+                if (IsGround(x , y + 1))
+                    tile.partIdx = 11;
+                else tile.partIdx = 10;
                 break;
             case Tile::Type::STEEP_SLOPE_L:
-                tile.partIdx = 9;
+                if (IsGround(x , y + 1))
+                    tile.partIdx = 8;
+                else tile.partIdx = 9;
                 break;
             default:
                 tile.partIdx = 0;
@@ -231,6 +247,7 @@ void StaticMap::Start()
                 polygon.SetVertices(vertices, 3);
                 break;
             case Tile::Type::STEEP_SLOPE_R:
+
                 colliderDef.userData.id = 10;
 
                 vertices[0] = position + PE_Vec2(1.0f, 0.0f);
