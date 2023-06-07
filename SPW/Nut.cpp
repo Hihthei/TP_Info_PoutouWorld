@@ -241,7 +241,8 @@ void Nut::OnCollisionStay(GameCollision &collision)
         float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
         if (fabsf(angle) > PLAYER_DAMAGE_ANGLE)
         {
-            player->Damage(-1);
+            if (!player->GetInvicibleStatue())
+                player->Damage(-1);
         }
         
         return;

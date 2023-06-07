@@ -294,8 +294,11 @@ void StaticMap::OnCollisionStay(GameCollision &collision)
             return;
         }
 
-        player->Damage(-1);
-        player->Bounce();
+        if (!player->GetInvicibleStatue())
+        {
+            player->Damage(-1);
+            player->Bounce();
+        }
     }
 }
 

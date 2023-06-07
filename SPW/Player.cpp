@@ -8,7 +8,10 @@
 Player::Player(Scene &scene) :
     GameBody(scene, Layer::PLAYER), m_animator(),
     m_jump(false), m_facingRight(true), m_bounce(false), m_hDirection(0.0f),
-    m_lifeCount(5), m_fireflyCount(0), m_heartCount(2), m_state(Player::State::IDLE)
+    m_lifeCount(5), m_fireflyCount(0), m_heartCount(5), m_state(Player::State::IDLE),
+    m_speed(5.0f), m_stateSwitchRunning(false), m_stateRunning(false), m_animSpeedValue(0.8f),
+    m_timerDead(0.0f)
+
 {
     m_name = "Player";
 
@@ -52,6 +55,15 @@ Player::Player(Scene &scene) :
     runningAnim->SetCycleCount(-1);
     runningAnim->SetCycleTime(0.3f);
 
+    /*
+    // Animation "Invicible"
+    part = atlas->GetPart("Skidding");
+    AssertNew(part);
+    RE_TexAnim* invicibleAnim = new RE_TexAnim(
+        m_animator, "Skidding", part
+    );
+    idleAnim->SetCycleCount(0);
+    */
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -87,18 +99,6 @@ void Player::Start()
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
     colliderDef.shape = &capsule;
     PE_Collider *collider = body->CreateCollider(colliderDef);
-
-    // Mise à jour des variables
-    m_heartCount = 3;
-
-    m_speed = 5.0f;
-    bool m_facingRight = true;
-    bool m_stateSwitchRunning = false;
-    bool m_stateRunning = false;
-    bool m_drift = false;
-    m_animSpeedValue = 0.8f;
-
-    m_timerDead = 0;
 }
 
 void Player::Update()
@@ -144,7 +144,7 @@ void Player::Render()
 void Player::FixedUpdate()
 {
 
-    PE_Body *body = GetBody();
+    PE_Body* body = GetBody();
     PE_Vec2 position = body->GetPosition();
 
     // DID : Récuperer la vitesse du joueur
@@ -154,12 +154,16 @@ void Player::FixedUpdate()
     WakeUpSurroundings();
 
 
-    // test des �tats du joueur
- 
+    // test des états du joueur
+
 
     // Chrono si le joueur meurt
-    /*if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
-        m_timerDead += m_scene.GetFixedTimeStep();*/
+    /*
+    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
+        m_timerDead += m_scene.GetFixedTimeStep();
+    else
+        m_timerDead = 0;
+    */
 
     // Animation de mort si le joueur meurt
     //if (m_statePlayer == State_Player::DEAD)
@@ -177,6 +181,7 @@ void Player::FixedUpdate()
         m_statePlayer = State_Player::DEAD;
     }
 
+
     // Tue le joueur s'il tombe dans un trou ou qu'il d�passe le temps de mort
     if (position.y < -2.0f || m_timerDead > 2.5f)
     {
@@ -189,10 +194,20 @@ void Player::FixedUpdate()
 
     // Chrono si le joueur et invincible
 
-    if (m_invincibleDelay >= 0.0f && m_statePlayer == State_Player::INVINCIBLE)
-        m_invincibleDelay -= m_scene.GetFixedTimeStep();
+    if (m_statePlayer == State_Player::INVINCIBLE)
+    {
+        m_invicibleState = true;
+        //        m_animator.PlayAnimation("Skidding");
+        m_statePlayer = State_Player::INVINCIBLE_DELAY;
+    }
+    else if (m_invincibleDelay <= 2.0f && m_statePlayer == State_Player::INVINCIBLE_DELAY)
+        m_invincibleDelay += m_scene.GetFixedTimeStep();
     else
+    {
         m_statePlayer = State_Player::ALIVE;
+        m_invincibleDelay = 0.0f;
+        m_invicibleState = false;
+    }
 
     //--------------------------------------------------------------------------
     // Détection du sol
@@ -436,6 +451,9 @@ void Player::OnCollisionEnter(GameCollision &collision)
 
     if (otherCollider->CheckCategory(CATEGORY_ENEMY))
     {
+        if (m_invicibleState)
+            return;
+            
         Enemy *enemy = dynamic_cast<Enemy *>(collision.gameBody);
         if (enemy == nullptr)
         {
@@ -482,7 +500,7 @@ void Player::OnCollisionStay(GameCollision &collision)
     PE_Collider *otherCollider = collision.otherCollider;
 
     // D�sactiver les collisions lorsque le joueur est en train de mourir
-    if (m_statePlayer == State_Player::DEAD )
+    if (m_statePlayer == State_Player::DEAD)
     {
         collision.SetEnabled(false);
         return;
@@ -511,6 +529,13 @@ void Player::OnCollisionStay(GameCollision &collision)
             collision.ResolveUp();
         }
     }
+    else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
+    {
+        if(m_invicibleState)
+            collision.SetEnabled(false);
+
+        return;
+    }
 }
 
 void Player::AddFirefly(int count)
@@ -533,9 +558,14 @@ void Player::Damage(int count)
     {
         m_statePlayer = State_Player::DEAD;
         m_lifeCount--;
-        printf("\n%d vies restantes\n", m_lifeCount);
+        m_heartCount = 3;
+        
+        printf( "_____________\n"
+                "%d vies restantes\n"
+                "%d pv restants\n"
+                "_____________\n\n", m_lifeCount, m_heartCount);
     }
-    if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
+    else if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {
         m_statePlayer = State_Player::INVINCIBLE;
         Bounce();

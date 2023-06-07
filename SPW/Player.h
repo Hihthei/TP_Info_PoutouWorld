@@ -24,6 +24,9 @@ public:
     int GetFireflyCount() const;
     int GetHeartCount() const;
     int GetLifeCount() const;
+    
+    bool GetInvicibleStatue();
+
     void AddFirefly(int count);
     void AddHeart(int count);
     void Damage(int count);
@@ -41,7 +44,7 @@ private:
 
     enum class State_Player
     {
-        ALIVE, DYING, DEAD, INVINCIBLE
+        ALIVE, DYING, DEAD, INVINCIBLE, INVINCIBLE_DELAY
     };
     State_Player m_statePlayer;
 
@@ -54,12 +57,9 @@ private:
 
     float m_timerDead;
     float m_invincibleDelay;
+    bool m_invicibleState;
 
     float m_animSpeedValue;
-
-    //vrai -> il vient de changer de sens
-    //faux -> il était déjà dans ce sens
-    bool m_stateSwitchRunning;
 
     bool m_jump;
     bool m_jumpHold;
@@ -68,6 +68,11 @@ private:
     bool m_onGround;
     bool m_bounce;
     bool m_facingRight;
+    bool m_stateRunning;
+
+    //vrai -> il vient de changer de sens
+    //faux -> il était déjà dans ce sens
+    bool m_stateSwitchRunning;
 
     int m_lifeCount = 3;
     int m_heartCount;
@@ -93,4 +98,9 @@ inline int Player::GetHeartCount() const
 inline int Player::GetLifeCount() const
 {
     return m_lifeCount;
+}
+
+inline bool Player::GetInvicibleStatue()
+{
+    return m_invicibleState;
 }
