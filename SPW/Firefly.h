@@ -22,9 +22,6 @@ private:
 
     RE_Anchor m_currentAnimation;
 
-    RE_Timer timerFirefly;
-    float timeDelta;
-
     enum class State
     {
         IDLE, PICKED

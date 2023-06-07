@@ -2,6 +2,7 @@
 #include "Collectable.h"
 #include "Scene.h"
 #include "Camera.h"
+#include "Player.h"
 #include "LevelScene.h"
 #include "Graphics.h"
 
@@ -47,8 +48,6 @@ Firefly::~Firefly()
 
 void Firefly::Start()
 {
-    timerFirefly.Start();
-
     SetToRespawn(true);
 
     // Joue l'animation par défaut
