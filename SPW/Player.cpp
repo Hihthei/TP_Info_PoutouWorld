@@ -158,23 +158,29 @@ void Player::FixedUpdate()
  
 
     // Chrono si le joueur meurt
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
-        m_timerDead += m_scene.GetFixedTimeStep();
+    /*if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
+        m_timerDead += m_scene.GetFixedTimeStep();*/
 
     // Animation de mort si le joueur meurt
-    if (m_statePlayer == State_Player::DEAD)
+    //if (m_statePlayer == State_Player::DEAD)
+    //{
+    //    
+    //    m_statePlayer = State_Player::DYING;
+    //    //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
+    //    body->SetVelocity(PE_Vec2(0.7f, 5.0f));
+    //    m_animator.PlayAnimation("Dying");
+    //}
+    if (m_statePlayer == State_Player::DYING)
     {
-        
-        m_statePlayer = State_Player::DYING;
-        //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
-        body->SetVelocity(PE_Vec2(0.7f, 5.0f));
+        body->SetVelocity(PE_Vec2(0.0f, 17.0f));
         m_animator.PlayAnimation("Dying");
+        m_statePlayer = State_Player::DEAD;
     }
 
     // Tue le joueur s'il tombe dans un trou ou qu'il d�passe le temps de mort
     if (position.y < -2.0f || m_timerDead > 2.5f)
     {
-        m_scene.Respawn();
+        Kill();
         return;
     }
 
@@ -419,11 +425,11 @@ void Player::OnCollisionEnter(GameCollision &collision)
     PE_Collider *otherCollider = collision.otherCollider;
 
     // D�sactiver les collisions lorsque le joueur est en train de mourir ou est invincible
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING || m_statePlayer == State_Player::INVINCIBLE)
+    /*if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING || m_statePlayer == State_Player::INVINCIBLE)
     {
         collision.SetEnabled(false);
         return;
-    }
+    }*/
 
 
     // Collision avec un ennemi
@@ -476,9 +482,14 @@ void Player::OnCollisionStay(GameCollision &collision)
     PE_Collider *otherCollider = collision.otherCollider;
 
     // D�sactiver les collisions lorsque le joueur est en train de mourir
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
+    if (m_statePlayer == State_Player::DEAD )
     {
         collision.SetEnabled(false);
+        return;
+    }
+    else
+    {
+        collision.SetEnabled(true);
         return;
     }
 
@@ -524,7 +535,7 @@ void Player::Damage(int count)
         m_lifeCount--;
         printf("\n%d vies restantes\n", m_lifeCount);
     }
-    if (m_heartCount > 0)
+    if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {
         m_statePlayer = State_Player::INVINCIBLE;
         Bounce();
@@ -538,6 +549,7 @@ void Player::Damage(int count)
 
 void Player::Kill()
 {
+    m_statePlayer = State_Player::ALIVE;
     m_scene.Respawn();
 }
 
