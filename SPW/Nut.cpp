@@ -91,7 +91,6 @@ void Nut::FixedUpdate()
 
     if (body->IsAwake() == false)
     {
-        
         return;
     }
 
@@ -226,7 +225,6 @@ void Nut::OnCollisionStay(GameCollision &collision)
 
     if (m_state == State::DYING)
     {
-        
         collision.SetEnabled(false);
         return;
     }

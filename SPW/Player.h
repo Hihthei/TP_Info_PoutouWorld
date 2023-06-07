@@ -44,6 +44,7 @@ private:
     float m_hDirection;
     float m_speed;
     float m_timerSpeed;
+    float m_timerDead;
     float m_animSpeedValue;
 
     //vrai -> il vient de changer de sens
@@ -52,6 +53,7 @@ private:
 
     bool m_jump;
     bool m_jumpHold;
+    float m_jumpDelay;
     bool m_onGround;
     bool m_bounce;
     bool m_facingRight;

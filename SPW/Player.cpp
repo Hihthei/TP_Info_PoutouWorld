@@ -89,6 +89,8 @@ void Player::Start()
     bool m_stateRunning = false;
     bool m_drift = false;
     m_animSpeedValue = 0.8f;
+
+    m_timerDead = 0;
 }
 
 void Player::Update()
@@ -143,20 +145,22 @@ void Player::FixedUpdate()
     // Réveille les corps autour du joueur
     WakeUpSurroundings();
 
+    // Chrono si le joueur meurt
+    if (m_state == State::DEAD || m_state == State::DYING)
+        m_timerDead += m_scene.GetFixedTimeStep();
+
     // Animation de mort si le joueur meurt
     if (m_state == State::DEAD)
     {
-        //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
         
+        m_state = State::DYING;
+        //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
         body->SetVelocity(PE_Vec2(0.7f, 5.0f));
         m_animator.PlayAnimation("Dying");
-
-        if(body->GetPosition().y < -2.0f)
-            Kill();
     }
 
     // Tue le joueur s'il tombe dans un trou
-    if (position.y < -2.0f)
+    if (position.y < -2.0f || m_timerDead > 2.5f)
     {
         m_scene.Respawn();
         return;
@@ -307,8 +311,13 @@ void Player::FixedUpdate()
     float maxHSpeed = 20.0f;
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
+    if (m_onGround)
+        m_jumpDelay = 0.2f;
+    else
+        m_jumpDelay -= m_scene.GetFixedTimeStep();
+
     // DID : Ajouter un jump avec une vitesse au choix
-    if (m_jump && m_onGround)
+    if (m_jump && m_onGround && (m_jumpDelay < 0.0f || m_jumpDelay == 0.2f))
     {
         m_jump = false;
         velocity.y = 11.0f;
@@ -385,6 +394,13 @@ void Player::OnCollisionEnter(GameCollision &collision)
 {
     const PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
+
+    // Désactiver les collisions lorsque le joueur est en train de mourir
+    if (m_state == State::DYING)
+    {
+        collision.SetEnabled(false);
+        return;
+    }
 
     // Collision avec un ennemi
     
