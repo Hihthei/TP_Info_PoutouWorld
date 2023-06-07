@@ -94,7 +94,7 @@ void Player::Start()
     PE_ColliderDef colliderDef;
 
     // DID : Donner une taille normale à la capsule
-    PE_CapsuleShape capsule(PE_Vec2(0.09f, 0.23f), PE_Vec2(0.09f, 0.78f), 0.23f);
+    PE_CapsuleShape capsule(PE_Vec2(0.09f, 0.20f), PE_Vec2(0.09f, 0.78f), 0.20f);
     colliderDef.friction = 2.5f;
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
     colliderDef.shape = &capsule;
