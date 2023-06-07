@@ -6,6 +6,8 @@
 #include "Settings.h"
 #include "Player.h"
 #include "StaticMap.h"
+#include "../PlatformerEngine/PE_Collider.h"
+
 
 
 sfalling::sfalling(Scene& scene) :
@@ -54,8 +56,8 @@ void sfalling::Start()
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.shape = &box;
     colliderDef.friction = 2.5f;
-    PE_Collider* collider = body->CreateCollider(colliderDef);
     colliderDef.isOneWay = true;
+    PE_Collider* collider = body->CreateCollider(colliderDef);
 }
 
 void sfalling::FixedUpdate()

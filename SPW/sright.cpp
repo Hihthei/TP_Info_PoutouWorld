@@ -54,8 +54,8 @@ void sright::Start()
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.shape = &box;
     colliderDef.friction = 2.5f;
-    PE_Collider* collider = body->CreateCollider(colliderDef);
     colliderDef.isOneWay = true;
+    PE_Collider* collider = body->CreateCollider(colliderDef);
 }
 
 void sright::FixedUpdate()
