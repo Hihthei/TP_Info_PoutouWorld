@@ -7,7 +7,7 @@
 
 Player::Player(Scene &scene) :
     GameBody(scene, Layer::PLAYER), m_animator(),
-    m_jump(false), m_facingRight(true), m_bounce(false), m_hDirection(0.0f),
+    m_jump(false), m_facingRight(true), m_bounce(false), m_hDirection(0.0f), m_zDirection(0.0f),
     m_lifeCount(3), m_heartCount(3), m_fireflyCount(0), m_state(Player::State::IDLE),
     m_speed(5.0f), m_stateSwitchRunning(false), m_stateRunning(false), m_animSpeedValue(0.8f),
     m_timerDead(0.0f)
@@ -111,6 +111,7 @@ void Player::Update()
 	// DID : Mettre à jour l'état du joueur en fonction des contrôles de jump
 
     m_hDirection = controls.hAxis;
+    m_zDirection = controls.goDownDown;
 
     m_jump = controls.jumpPressed;
     m_jumpHold = controls.jumpDown;
@@ -176,7 +177,8 @@ void Player::FixedUpdate()
     //}
     if (m_statePlayer == State_Player::DYING)
     {
-        body->SetVelocity(PE_Vec2(0.0f, 17.0f));
+        body->ApplyForce(PE_Vec2(5.0f, 17.0f));
+        body->SetVelocity(PE_Vec2(5.0f, 17.0f));
         m_animator.PlayAnimation("Dying");
         m_statePlayer = State_Player::DEAD;
     }
@@ -266,16 +268,32 @@ void Player::FixedUpdate()
             m_animator.PlayAnimation("Falling");
         }
     }
+    //--------------------------------------------------------------------------
+
 
     
-    
-    //TODO
+    // DID
     // Orientation du joueur
     // Utilisez m_hDirection qui vaut :
     // *  0.0f si le joueur n'accélère pas ;
     // * +1.0f si le joueur accélère vers la droite ;
     // * -1.0f si le joueur accélère vers la gauche.
 
+    // Utilisez m_zDirection qui vaut :
+    // *  0.0f si le joueur ne descend pas ;
+    // * -1.0f si le joueur descend
+
+    /*
+    if (m_zDirection > 0.0f)
+    {
+        // TODO
+        
+        j'aimerais touché la taille du collider mais je sais pas à quel point c'est gravissime
+        donc j'attends de voir demain avec les profs
+        
+    }
+    else */
+        //collider de taille normal
 
     m_timerSpeed += m_scene.GetFixedTimeStep();
 
@@ -506,10 +524,7 @@ void Player::OnCollisionStay(GameCollision &collision)
         return;
     }
     else
-    {
         collision.SetEnabled(true);
-        return;
-    }
 
 
     if (otherCollider->CheckCategory(CATEGORY_COLLECTABLE))
@@ -540,7 +555,7 @@ void Player::AddFirefly(int count)
 {
     m_fireflyCount += count;
     if (m_fireflyCount >= 30)
-        AddLife(1);
+        AddHeart(1);
 }
 
 void Player::AddLife(int count)
@@ -550,7 +565,18 @@ void Player::AddLife(int count)
 
 void Player::AddHeart(int count)
 {
-    m_heartCount += count;
+    if (m_heartCount >= 5)
+    {
+        AddLife(1);
+        m_heartCount = 3;
+    }
+    else
+        m_heartCount += count;
+
+    printf("_____________\n"
+        "%d vies restantes\n"
+        "%d pv restants\n"
+        "_____________\n\n", m_lifeCount, m_heartCount);
 }
 
 void Player::Damage(int count)

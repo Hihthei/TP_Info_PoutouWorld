@@ -12,11 +12,12 @@
 #include "Nut.h"
 #include "nutdebile.h"
 #include "Firefly.h"
+#include "Heart.h"
 #include "LevelEnd.h"
 #include "Bonus.h"
 #include "Camera.h"
 
-// TODO : Ajouter le fichier "Firefly.h"
+// DID : Ajouter le fichier "Firefly.h"
 
 LevelParser::LevelParser(const std::string &path)
 {
@@ -220,9 +221,16 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'o':
             {
-                // TODO : Créer une luciolle
+                // DID : Créer une luciolle
                 Firefly* firefly = new Firefly(scene, Layer::TERRAIN);
                 firefly->SetStartPosition(position);
+                break;
+            }
+            case 'h':
+            {
+                // Créer un coeur
+                Heart* heart = new Heart(scene, Layer::TERRAIN);
+                heart->SetStartPosition(position);
                 break;
             }
             case 'b':

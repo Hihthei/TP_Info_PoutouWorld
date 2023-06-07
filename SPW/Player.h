@@ -53,6 +53,7 @@ private:
     RE_Animator m_animator;
 
     float m_hDirection;
+    float m_zDirection;
 
     float m_speed;
     float m_timerSpeed;
