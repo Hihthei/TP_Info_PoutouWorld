@@ -385,6 +385,9 @@ void Player::FixedUpdate()
         velocity.y = 11.0f;
     }
 
+    //todo
+
+
     body->SetGravityScale(1.0f);
 
     if (m_jumpHold)
