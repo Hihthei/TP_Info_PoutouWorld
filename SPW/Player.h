@@ -35,16 +35,26 @@ private:
 
     enum class State
     {
-        IDLE, WALKING, RUNNING, SKIDDING, FALLING, DYING, DEAD
+        IDLE, WALKING, RUNNING, SKIDDING, FALLING
     };
     State m_state;
+
+    enum class State_Player
+    {
+        ALIVE, DYING, DEAD, INVINCIBLE
+    };
+    State_Player m_statePlayer;
 
     RE_Animator m_animator;
 
     float m_hDirection;
+
     float m_speed;
     float m_timerSpeed;
+
     float m_timerDead;
+    float m_invincibleDelay;
+
     float m_animSpeedValue;
 
     //vrai -> il vient de changer de sens
@@ -54,6 +64,7 @@ private:
     bool m_jump;
     bool m_jumpHold;
     float m_jumpDelay;
+
     bool m_onGround;
     bool m_bounce;
     bool m_facingRight;
