@@ -428,10 +428,10 @@ void Player::DrawGizmos()
 
     // Dessine en jaune les rayons pour la détection du sol
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-    PE_Vec2 originL = position + PE_Vec2(-0.35f, 0.0f);
-    PE_Vec2 originR = position + PE_Vec2(+0.35f, 0.0f);
-    graphics.DrawVector(0.1f * PE_Vec2::down, originL);
-    graphics.DrawVector(0.1f * PE_Vec2::down, originR);
+    PE_Vec2 originL = position + PE_Vec2(-0.5f, 0.0f);
+    PE_Vec2 originR = position + PE_Vec2(+0.5f, 0.0f);
+    graphics.DrawVector(0.25f * PE_Vec2::down, originL);
+    graphics.DrawVector(0.25f * PE_Vec2::down, originR);
 }
 
 void Player::OnCollisionEnter(GameCollision &collision)
