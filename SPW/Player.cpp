@@ -26,16 +26,6 @@ Player::Player(Scene &scene) :
     );
     idleAnim->SetCycleCount(0);
 
-    
-    // Animation "Dead"
-    part = atlas->GetPart("Dying");
-    AssertNew(part);
-    RE_TexAnim* dyingAnim = new RE_TexAnim(
-        m_animator, "Dying", part
-    );
-    idleAnim->SetCycleCount(0);
-    
-
     // DID : ajouter l'animation "Falling"
     part = atlas->GetPart("Falling");
     AssertNew(part);
@@ -159,33 +149,22 @@ void Player::FixedUpdate()
     if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
         m_timerDead += m_scene.GetFixedTimeStep();
 
-    // test des états du joueur
-
     // Animation de mort si le joueur meurt
     if (m_statePlayer == State_Player::DEAD)
     {
+        
         m_statePlayer = State_Player::DYING;
         //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
-        body->SetVelocity(PE_Vec2(3.0f, 5.0f));
+        body->SetVelocity(PE_Vec2(0.7f, 5.0f));
         m_animator.PlayAnimation("Dying");
     }
 
-    // Tue le joueur s'il tombe dans un trou ou qu'il dépasse le temps de mort
+    // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f || m_timerDead > 2.5f)
     {
         m_scene.Respawn();
         return;
     }
-
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
-        return;
-
-    // Chrono si le joueur et invincible
-
-    if (m_invincibleDelay >= 0.0f && m_statePlayer == State_Player::INVINCIBLE)
-        m_invincibleDelay -= m_scene.GetFixedTimeStep();
-    else
-        m_statePlayer = State_Player::ALIVE;
 
     //--------------------------------------------------------------------------
     // Détection du sol
@@ -328,6 +307,7 @@ void Player::FixedUpdate()
     PE_Vec2 force = (m_speed * m_hDirection) * direction;
     body->ApplyForce(force);
 
+
     // DID : Limiter la vitesse horizontale
     float maxHSpeed = 20.0f;
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
@@ -416,14 +396,15 @@ void Player::OnCollisionEnter(GameCollision &collision)
     const PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
 
-    // Désactiver les collisions lorsque le joueur est en train de mourir ou est invincible
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING || m_statePlayer == State_Player::INVINCIBLE)
+    // Désactiver les collisions lorsque le joueur est en train de mourir
+    if (m_statePlayer == State_Player::DYING)
     {
         collision.SetEnabled(false);
         return;
     }
 
     // Collision avec un ennemi
+    
 
     if (otherCollider->CheckCategory(CATEGORY_ENEMY))
     {
@@ -469,13 +450,6 @@ void Player::OnCollisionEnter(GameCollision &collision)
 
 void Player::OnCollisionStay(GameCollision &collision)
 {
-    // Désactiver les collisions lorsque le joueur est en train de mourir
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
-    {
-        collision.SetEnabled(false);
-        return;
-    }
-
     const PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
 
@@ -514,23 +488,20 @@ void Player::Damage(int count)
     AddHeart(count);
     printf("\n%d pv restants\n", m_heartCount);
 
-    if (m_heartCount <= 0)
+    if (m_heartCount == 0)
     {
         m_statePlayer = State_Player::DEAD;
         m_lifeCount--;
         printf("\n%d vies restantes\n", m_lifeCount);
-
     }
-
-    if (m_lifeCount == 0);
-        //TODO -> retourner au menu
-
     if (m_heartCount > 0)
     {
         m_statePlayer = State_Player::INVINCIBLE;
         Bounce();
     }
 
+    if (m_lifeCount == 0) ;
+        //TODO -> retourner au menu
 
     // TODO -> affichage graphique
 }

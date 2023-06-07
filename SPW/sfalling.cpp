@@ -50,7 +50,7 @@ void sfalling::Start()
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
-    // Crée le collider
+    // Crée le colliderl
     PE_PolygonShape box(-0.5f, 0.5f, 0.5f, 1.0f);
     PE_ColliderDef colliderDef;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;

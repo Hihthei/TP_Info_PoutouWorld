@@ -35,6 +35,8 @@ private:
     RE_AtlasPart *m_oneWayPart;
     RE_AtlasPart *m_terrainPart;
     RE_AtlasPart *m_spikePart;
+    RE_AtlasPart* m_steepslopel;
+    RE_AtlasPart* m_steepsloper;
 
     Tile **m_tiles;
     int m_width;

@@ -34,6 +34,12 @@ StaticMap::StaticMap(Scene &scene, int width, int height) :
     m_spikePart = atlas->GetPart("Spike");
     AssertNew(m_spikePart);
 
+    m_steepsloper = atlas->GetPart("Terrain");
+    AssertNew(m_steepsloper);
+
+    m_steepslopel = atlas->GetPart("Terrain");
+    AssertNew(m_steepslopel);
+
     // Couleur des colliders en debug
     m_debugColor.r = 255;
     m_debugColor.g = 200;
@@ -86,11 +92,17 @@ void StaticMap::InitTiles()
                     tile.partIdx = 1;
                 }
                 break;
-
+            case Tile::Type::STEEP_SLOPE_R:
+                tile.partIdx = 10;
+                break;
+            case Tile::Type::STEEP_SLOPE_L:
+                tile.partIdx = 9;
+                break;
             default:
                 tile.partIdx = 0;
                 break;
             }
+            
         }
     }
 }
@@ -129,8 +141,14 @@ void StaticMap::Render()
             switch (tile.type)
             {
             case Tile::Type::GROUND:
+                m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
             case Tile::Type::STEEP_SLOPE_L:
+                m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
             case Tile::Type::STEEP_SLOPE_R:
+                m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
             case Tile::Type::GENTLE_SLOPE_L1:
             case Tile::Type::GENTLE_SLOPE_L2:
             case Tile::Type::GENTLE_SLOPE_R1:
@@ -198,6 +216,8 @@ void StaticMap::Start()
                 break;
 
             case Tile::Type::GROUND:
+                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                break;
             case Tile::Type::WOOD:
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
@@ -210,7 +230,23 @@ void StaticMap::Start()
                 vertices[2] = position + PE_Vec2(0.5f, 0.8f);
                 polygon.SetVertices(vertices, 3);
                 break;
+            case Tile::Type::STEEP_SLOPE_R:
+                colliderDef.userData.id = 10;
+                colliderDef.friction = 0.0f;
 
+                vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[1] = position + PE_Vec2(1.0f, 1.0f);
+                vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::STEEP_SLOPE_L:
+                colliderDef.userData.id = 9;
+
+                vertices[0] = position + PE_Vec2(0.0f, 1.0f);
+                vertices[1] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                polygon.SetVertices(vertices, 3);
+                break;
             default:
                 newCollider = false;
                 break;
