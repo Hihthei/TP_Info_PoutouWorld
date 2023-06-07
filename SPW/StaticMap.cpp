@@ -40,6 +40,12 @@ StaticMap::StaticMap(Scene &scene, int width, int height) :
     m_steepslopel = atlas->GetPart("Terrain");
     AssertNew(m_steepslopel);
 
+    m_gentlesloper = atlas->GetPart("Terrain");
+    AssertNew(m_gentlesloper);
+
+    m_gentleslopel = atlas->GetPart("Terrain");
+    AssertNew(m_gentleslopel);
+
     // Couleur des colliders en debug
     m_debugColor.r = 255;
     m_debugColor.g = 200;
@@ -114,6 +120,22 @@ void StaticMap::InitTiles()
                     tile.partIdx = 8;
                 else tile.partIdx = 9;
                 break;
+            case Tile::Type::GENTLE_SLOPE_L:
+                if (IsGround(x - 1, y) && IsGround(x + 1, y) && IsGround(x, y + 1) == false)
+                    tile.partIdx = 12;
+                else if (IsGround(x, y + 1))
+                    tile.partIdx = 14;
+                else
+                    tile.partIdx = 13;
+                break;
+            case Tile::Type::GENTLE_SLOPE_R:
+                if (IsGround(x + 1, y) && IsGround(x - 1, y) && IsGround(x, y + 1) == false )
+                    tile.partIdx = 16;
+                else if (IsGround(x, y + 1))
+                    tile.partIdx = 17;
+                else
+                    tile.partIdx = 15;
+                break;
             default:
                 tile.partIdx = 0;
                 break;
@@ -165,10 +187,10 @@ void StaticMap::Render()
             case Tile::Type::STEEP_SLOPE_R:
                 m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
                 break;
-            case Tile::Type::GENTLE_SLOPE_L1:
-            case Tile::Type::GENTLE_SLOPE_L2:
-            case Tile::Type::GENTLE_SLOPE_R1:
-            case Tile::Type::GENTLE_SLOPE_R2:
+            case Tile::Type::GENTLE_SLOPE_L:
+                m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GENTLE_SLOPE_R:
                 m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
                 break;
             case Tile::Type::WOOD:
@@ -263,6 +285,47 @@ void StaticMap::Start()
                 vertices[2] = position + PE_Vec2(0.0f, 0.0f);
                 polygon.SetVertices(vertices, 3);
                 break;
+            case Tile::Type::GENTLE_SLOPE_L:
+                if (tile.partIdx == 12)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[1] = position + PE_Vec2(0.0f, 1.0f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.5f);
+                    polygon.SetVertices(vertices, 3);
+
+                }
+                else if (tile.partIdx == 13)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                    vertices[1] = position + PE_Vec2(0.0f, 0.5f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else
+                {
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                }
+                break;
+            case Tile::Type::GENTLE_SLOPE_R:
+                if (tile.partIdx == 16)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[1] = position + PE_Vec2(1.0f, 1.0f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.5f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else if (tile.partIdx == 15)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                    vertices[1] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else
+                {
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                }
+                break;
             default:
                 newCollider = false;
                 break;
@@ -336,10 +399,8 @@ bool StaticMap::IsGround(int x, int y) const
     case Tile::Type::GROUND:
     case Tile::Type::STEEP_SLOPE_L:
     case Tile::Type::STEEP_SLOPE_R:
-    case Tile::Type::GENTLE_SLOPE_L1:
-    case Tile::Type::GENTLE_SLOPE_L2:
-    case Tile::Type::GENTLE_SLOPE_R1:
-    case Tile::Type::GENTLE_SLOPE_R2:
+    case Tile::Type::GENTLE_SLOPE_L:
+    case Tile::Type::GENTLE_SLOPE_R:
         return true;
     default:
         return false;
