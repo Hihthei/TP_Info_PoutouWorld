@@ -1,4 +1,4 @@
-#include "mouvante2.h"
+#include "sleft.h"
 #include "Scene.h"
 #include "Graphics.h"
 #include "LevelScene.h"
@@ -8,16 +8,16 @@
 #include "StaticMap.h"
 
 
-mouvante2::mouvante2(Scene& scene) :
+sleft::sleft(Scene& scene) :
     GameBody(scene, Layer::TERRAIN), m_animator()
 {
-    m_name = "mouvante2";
+    m_name = "sleft";
 
 
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("MovingPlatform");
+    RE_AtlasPart* part = atlas->GetPart("OneWay");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "Base", part);
 
@@ -26,12 +26,12 @@ mouvante2::mouvante2(Scene& scene) :
     m_debugColor.b = 255;
 }
 
-mouvante2::~mouvante2()
+sleft::~sleft()
 {
 
 }
 
-void mouvante2::Start()
+void sleft::Start()
 {
     SetToRespawn(true);
 
@@ -44,12 +44,12 @@ void mouvante2::Start()
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::KINEMATIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-    bodyDef.name = "Brick";
+    bodyDef.name = "sleft";
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_PolygonShape box(-1.5f, 0.0f, 1.5f, 0.5f);
+    PE_PolygonShape box(-0.5f, 0.5f, 0.5f, 1.0f);
     PE_ColliderDef colliderDef;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.shape = &box;
@@ -58,18 +58,18 @@ void mouvante2::Start()
     colliderDef.isOneWay = true;
 }
 
-void mouvante2::FixedUpdate()
+void sleft::FixedUpdate()
 {
     PE_Body* body = GetBody();
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
-    if (position.x > (GetStartPosition().x + 4.0f))
-    {
-        m_state = State::LEFTING;
-    }
-    if (position.x <= (GetStartPosition().x + 0.5f ))
+    if (position.x < (GetStartPosition().x - 3.0f))
     {
         m_state = State::RIGHTING;
+    }
+    if (position.x>= (GetStartPosition().x + 0.5f ))
+    {
+        m_state = State::LEFTING;
     }
     if (m_state == State::RIGHTING)
     {
@@ -81,7 +81,7 @@ void mouvante2::FixedUpdate()
     }
 }
 
-void mouvante2::Render()
+void sleft::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
@@ -90,13 +90,13 @@ void mouvante2::Render()
 
     float scale = camera->GetWorldToViewScale();
     SDL_FRect rect = { 0 };
-    rect.w = 3.0f * scale;
-    rect.h = 0.5f * scale;
+    rect.w = 1.0f * scale;
+    rect.h = 1.0f * scale;
     camera->WorldToView(GetPosition(), rect.x, rect.y);
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
-void mouvante2::OnCollisionEnter(GameCollision& collision)
+void sleft::OnCollisionEnter(GameCollision& collision)
 {
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
@@ -106,7 +106,7 @@ void mouvante2::OnCollisionEnter(GameCollision& collision)
 
 }
 
-void mouvante2::OnRespawn()
+void sleft::OnRespawn()
 {
     m_state = State::IDLE;
 

@@ -1,4 +1,4 @@
-#include "mouvante1.h"
+#include "lright.h"
 #include "Scene.h"
 #include "Graphics.h"
 #include "LevelScene.h"
@@ -8,16 +8,16 @@
 #include "StaticMap.h"
 
 
-mouvante1::mouvante1(Scene& scene) :
+lright::lright(Scene& scene) :
     GameBody(scene, Layer::TERRAIN), m_animator()
 {
-    m_name = "mouvante1";
+    m_name = "lright";
 
 
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("OneWay");
+    RE_AtlasPart* part = atlas->GetPart("MovingPlatform");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "Base", part);
 
@@ -26,12 +26,12 @@ mouvante1::mouvante1(Scene& scene) :
     m_debugColor.b = 255;
 }
 
-mouvante1::~mouvante1()
+lright::~lright()
 {
 
 }
 
-void mouvante1::Start()
+void lright::Start()
 {
     SetToRespawn(true);
 
@@ -44,12 +44,12 @@ void mouvante1::Start()
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::KINEMATIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-    bodyDef.name = "Brick";
+    bodyDef.name = "lright";
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_PolygonShape box(-0.5f, 0.0f, 0.5f, 1.0f);
+    PE_PolygonShape box(-1.5f, 0.0f, 1.5f, 0.5f);
     PE_ColliderDef colliderDef;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.shape = &box;
@@ -58,37 +58,30 @@ void mouvante1::Start()
     colliderDef.isOneWay = true;
 }
 
-void mouvante1::FixedUpdate()
+void lright::FixedUpdate()
 {
     PE_Body* body = GetBody();
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
-    if (m_state == State::FALLING)
+    if (position.x > (GetStartPosition().x + 4.0f))
     {
-        body->SetVelocity(PE_Vec2(0.0f, -3.0f));
+        m_state = State::LEFTING;
     }
-    if (position.y < (GetStartPosition().y - 5.0f))
+    if (position.x <= (GetStartPosition().x + 0.5f ))
     {
-        m_state = State::MONTING;
+        m_state = State::RIGHTING;
     }
-    if (position.y >= (GetStartPosition().y ) && m_state==State::MONTING )
+    if (m_state == State::RIGHTING)
     {
-        m_state = State::IDLE;
+        body->SetVelocity(PE_Vec2(2.0f, 0.0f));
     }
-    if (m_state == State::MONTING)
+    if (m_state == State::LEFTING)
     {
-        body->SetVelocity(PE_Vec2(0.0f, 1.0f));
-
+        body->SetVelocity(PE_Vec2(-2.0f, 0.0f));
     }
-    if (m_state == State::IDLE)
-    {
-        body->SetVelocity(PE_Vec2(0.0f, 0.0f));
-
-    }
-    
 }
 
-void mouvante1::Render()
+void lright::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
@@ -97,24 +90,23 @@ void mouvante1::Render()
 
     float scale = camera->GetWorldToViewScale();
     SDL_FRect rect = { 0 };
-    rect.w = 1.0f * scale;
-    rect.h = 1.0f * scale;
+    rect.w = 3.0f * scale;
+    rect.h = 0.5f * scale;
     camera->WorldToView(GetPosition(), rect.x, rect.y);
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
-void mouvante1::OnCollisionEnter(GameCollision& collision)
+void lright::OnCollisionEnter(GameCollision& collision)
 {
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        m_state = State::FALLING;
 
     }
 
-    
+
 }
 
-void mouvante1::OnRespawn()
+void lright::OnRespawn()
 {
     m_state = State::IDLE;
 

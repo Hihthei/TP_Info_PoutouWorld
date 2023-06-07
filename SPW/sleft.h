@@ -3,11 +3,11 @@
 #include "Settings.h"
 #include "GameBody.h"
 
-class mouvante1 : public GameBody
+class sleft : public GameBody
 {
 public:
-    mouvante1(Scene& scene);
-    virtual ~mouvante1();
+    sleft(Scene& scene);
+    virtual ~sleft();
 
     virtual void Start() override;
     virtual void Render() override;
@@ -20,7 +20,7 @@ private:
 
     enum class State
     {
-        IDLE, FALLING, MONTING
+        IDLE, RIGHTING, LEFTING
     };
     State m_state;
 };

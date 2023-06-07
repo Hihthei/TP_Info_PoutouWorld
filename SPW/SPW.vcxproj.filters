@@ -185,10 +185,22 @@
     <ClCompile Include="Firefly.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClCompile>
-    <ClCompile Include="monvante1.cpp">
+    <ClCompile Include="sfalling.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="mouvante2.cpp">
+    <ClCompile Include="lright.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="sright.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="lleft.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="sleft.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="lfalling.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
@@ -325,10 +337,22 @@
     <ClInclude Include="Firefly.h">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClInclude>
-    <ClInclude Include="mouvante1.h">
+    <ClInclude Include="sfalling.h">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="mouvante2.h">
+    <ClInclude Include="lright.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="sright.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="lleft.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="sleft.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="lfalling.h">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClInclude>
   </ItemGroup>

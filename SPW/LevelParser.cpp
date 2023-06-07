@@ -1,8 +1,12 @@
 #include "LevelParser.h"
 #include "StaticMap.h"
 #include "Brick.h"
-#include "mouvante1.h"
-#include "mouvante2.h"
+#include "sfalling.h"
+#include "lfalling.h"
+#include "lright.h"
+#include "sright.h"
+#include "sleft.h"
+#include "lleft.h"
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
@@ -229,16 +233,44 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'm':
             {
-                // creer une petite plateforme mouvante
-                mouvante1* Mouvante1 = new mouvante1(scene);
-                Mouvante1->SetStartPosition(position);
+                // creer une petite plateforme qui tombe si l'on mone dessus
+                sfalling* Sfalling = new sfalling(scene);
+                Sfalling->SetStartPosition(position);
                 break;
             }
             case 'M':
             {
-                // creer une grande plateforme mouvante
-                mouvante2* Mouvante2 = new mouvante2(scene);
-                Mouvante2->SetStartPosition(position);
+                // creer une grande plateforme qui tombe si l'on mone dessus
+                lfalling* Lfalling = new lfalling(scene);
+                Lfalling->SetStartPosition(position);
+                break;
+            }
+            case 'd':
+            {
+                // creer une petite plateforme mouvante qui se decale a droite
+                sright* Sright = new sright(scene);
+                Sright->SetStartPosition(position);
+                break;
+            }
+            case 'D':
+            {
+                // creer une grande plateforme mouvante qui se decale a droite
+                lright* Lright = new lright(scene);
+                Lright->SetStartPosition(position);
+                break;
+            }
+            case 'g':
+            {
+                // creer une petite plateforme mouvante qui se decale a gauche
+                sleft* Sleft = new sleft(scene);
+                Sleft->SetStartPosition(position);
+                break;
+            }
+            case 'G':
+            {
+                // creer une grande plateforme mouvante qui se decale a gauche
+                lleft* Lleft = new lleft(scene);
+                Lleft->SetStartPosition(position);
                 break;
             }
             default:
