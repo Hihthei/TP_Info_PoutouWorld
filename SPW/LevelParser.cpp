@@ -174,7 +174,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             case 'A':
                 map->SetTile(x, y, Tile::Type::SPIKE);
                 break;
-            case '\\':
+            case '|':
                 map->SetTile(x, y, Tile::Type::STEEP_SLOPE_L);
                 break;
             case '/':

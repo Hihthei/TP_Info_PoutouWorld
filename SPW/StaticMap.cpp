@@ -232,7 +232,6 @@ void StaticMap::Start()
                 break;
             case Tile::Type::STEEP_SLOPE_R:
                 colliderDef.userData.id = 10;
-                colliderDef.friction = 0.0f;
 
                 vertices[0] = position + PE_Vec2(1.0f, 0.0f);
                 vertices[1] = position + PE_Vec2(1.0f, 1.0f);
@@ -242,8 +241,8 @@ void StaticMap::Start()
             case Tile::Type::STEEP_SLOPE_L:
                 colliderDef.userData.id = 9;
 
-                vertices[0] = position + PE_Vec2(0.0f, 1.0f);
-                vertices[1] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[1] = position + PE_Vec2(0.0f, 1.0f);
                 vertices[2] = position + PE_Vec2(0.0f, 0.0f);
                 polygon.SetVertices(vertices, 3);
                 break;
