@@ -69,11 +69,13 @@ void Checkpoint::Render()
 
 void Checkpoint::OnCollisionEnter(GameCollision &collision)
 {
-    if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
-    {
-        m_animator.PlayAnimation("Full");
-        Player* player = dynamic_cast<Player*>(collision.gameBody);
-        player->SetStartPosition(GetStartPosition());
+    Player* player = dynamic_cast<Player*>(collision.gameBody);
+    if (player == nullptr)
+        return;
 
-    }
+    if (player->GetStatePlayer())
+    {
+        player->SetStartPosition(GetStartPosition());
+        m_animator.PlayAnimation("Full");
+    }  
 }

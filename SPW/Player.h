@@ -26,8 +26,10 @@ public:
     int GetLifeCount() const;
     
     bool GetInvicibleStatue();
+    bool GetStatePlayer();
 
     void AddFirefly(int count);
+    void AddLife(int count);
     void AddHeart(int count);
     void Damage(int count);
     void Kill();
@@ -79,6 +81,13 @@ private:
     int m_fireflyCount;
 };
 
+inline bool Player::GetStatePlayer()
+{
+    if (m_statePlayer == State_Player::ALIVE)
+        return true;
+    else
+        return false;
+}
 
 inline void Player::Bounce()
 {

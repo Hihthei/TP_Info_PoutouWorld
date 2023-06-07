@@ -8,7 +8,7 @@
 Player::Player(Scene &scene) :
     GameBody(scene, Layer::PLAYER), m_animator(),
     m_jump(false), m_facingRight(true), m_bounce(false), m_hDirection(0.0f),
-    m_lifeCount(5), m_fireflyCount(0), m_heartCount(5), m_state(Player::State::IDLE),
+    m_lifeCount(3), m_heartCount(3), m_fireflyCount(0), m_state(Player::State::IDLE),
     m_speed(5.0f), m_stateSwitchRunning(false), m_stateRunning(false), m_animSpeedValue(0.8f),
     m_timerDead(0.0f)
 
@@ -531,16 +531,21 @@ void Player::OnCollisionStay(GameCollision &collision)
     }
     else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
     {
-        if(m_invicibleState)
+        if(m_invicibleState == true)
             collision.SetEnabled(false);
-
-        return;
     }
 }
 
 void Player::AddFirefly(int count)
 {
     m_fireflyCount += count;
+    if (m_fireflyCount >= 30)
+        AddLife(1);
+}
+
+void Player::AddLife(int count)
+{
+    m_lifeCount += count;
 }
 
 void Player::AddHeart(int count)
@@ -568,6 +573,7 @@ void Player::Damage(int count)
     else if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {
         m_statePlayer = State_Player::INVINCIBLE;
+        m_invicibleState = true;
         Bounce();
     }
 
@@ -604,4 +610,5 @@ void Player::WakeUpSurroundings()
     );
     WakeUpCallback callback;
     world.QueryAABB(callback, aabb);
+
 }
