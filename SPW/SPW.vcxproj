@@ -165,6 +165,7 @@
     <ClCompile Include="lleft.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainCamera.cpp" />
+    <ClCompile Include="nutdébile.cpp" />
     <ClCompile Include="sfalling.cpp" />
     <ClCompile Include="MouseInput.cpp" />
     <ClCompile Include="lright.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="lleft.h" />
     <ClInclude Include="MainCamera.h" />
     <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="nutdebile.h" />
     <ClInclude Include="sfalling.h" />
     <ClInclude Include="lright.h" />
     <ClInclude Include="Nut.h" />

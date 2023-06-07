@@ -203,6 +203,9 @@
     <ClCompile Include="lfalling.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="nutdébile.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -354,6 +357,9 @@
     </ClInclude>
     <ClInclude Include="lfalling.h">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="nutdebile.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
+#include "nutdebile.h"
 #include "Firefly.h"
 #include "LevelEnd.h"
 #include "Bonus.h"
@@ -215,6 +216,12 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Nut *nut = new Nut(scene);
                 nut->SetStartPosition(position);
+                break;
+            }
+            case 'E':
+            {
+                nutdebile* Nutdebile = new nutdebile(scene);
+                Nutdebile->SetStartPosition(position);
                 break;
             }
             case 'o':
