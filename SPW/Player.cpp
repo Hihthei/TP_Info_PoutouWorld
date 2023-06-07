@@ -373,20 +373,16 @@ void Player::FixedUpdate()
     float maxHSpeed = 20.0f;
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
-    if (m_onGround)
-        m_jumpDelay = 0.2f;
-    else
-        m_jumpDelay -= m_scene.GetFixedTimeStep();
-
-    // DID : Ajouter un jump avec une vitesse au choix
-    if (m_jump && m_onGround && (m_jumpDelay < 0.0f || m_jumpDelay == 0.2f))
+    if (m_jumpHold)
     {
-        m_jump = false;
-        velocity.y = 11.0f;
+        m_jumpDelay = 0.2;
+        if (m_onGround && (m_jumpDelay -= m_scene.GetFixedTimeStep()) >= 0.0f)
+        {
+            velocity.y = 11.0f;
+            m_jump = false;
+        }
+
     }
-
-    //todo
-
 
     body->SetGravityScale(1.0f);
 
