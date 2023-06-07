@@ -77,7 +77,7 @@ private:
     //faux -> il était déjà dans ce sens
     bool m_stateSwitchRunning;
 
-    int m_lifeCount = 3;
+    int m_lifeCount;
     int m_heartCount;
     int m_fireflyCount;
 };

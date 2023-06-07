@@ -17,4 +17,11 @@ public:
 private:
     LevelScene &m_levelScene;
     Text *m_fireflyCount;
+
+    Text* m_lifeCount;
+    int m_lifeCountInt;
+
+    Text* m_heartCount;
+    int m_heartCountInt;
+
 };

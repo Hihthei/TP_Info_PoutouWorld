@@ -561,40 +561,32 @@ void Player::AddFirefly(int count)
 void Player::AddLife(int count)
 {
     m_lifeCount += count;
+
+    if (m_lifeCount == 0)
+        Kill();
 }
 
 void Player::AddHeart(int count)
 {
-    if (m_heartCount >= 5)
+    if (m_heartCount == 4 && count == 1)
     {
         AddLife(1);
         m_heartCount = 3;
     }
     else
         m_heartCount += count;
-
-    printf("_____________\n"
-        "%d vies restantes\n"
-        "%d pv restants\n"
-        "_____________\n\n", m_lifeCount, m_heartCount);
 }
 
 void Player::Damage(int count)
 {
     // Méthode appelée par un ennemi qui touche le joueur
     AddHeart(count);
-    printf("\n%d pv restants\n", m_heartCount);
 
-    if (m_heartCount <= 0)
+    if (m_heartCount == 0)
     {
         m_statePlayer = State_Player::DEAD;
         m_lifeCount--;
         m_heartCount = 3;
-        
-        printf( "_____________\n"
-                "%d vies restantes\n"
-                "%d pv restants\n"
-                "_____________\n\n", m_lifeCount, m_heartCount);
     }
     else if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {

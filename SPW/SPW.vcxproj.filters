@@ -203,7 +203,7 @@
     <ClCompile Include="lfalling.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="nutdébile.cpp">
+    <ClCompile Include="nutdebile.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
