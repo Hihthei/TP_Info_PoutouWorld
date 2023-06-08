@@ -1,17 +1,20 @@
 {
     "texture": "Player.png",
     "geometry": {
-        "rowCount": 3,
+        "rowCount": 6,
         "colCount": 8,
         "width": 80,
         "height": 110,
         "border": 5
     },
-    "parts": [
-        {"name": "Falling",  "frames": [8,9,10,11,12,13,14,15]},
-        {"name": "Running",  "frames": [0,1,2,3,4,5]},
-        {"name": "Idle",     "frames": [16]},
-        {"name": "Dying",    "frames": [17]},
-        {"name": "Skidding", "frames": [18]}
-    ]
+  "parts": [
+    { "name": "Falling", "frames": [ 8, 9, 10, 11, 12, 13, 14, 15 ] },
+    { "name": "Running", "frames": [ 0, 1, 2, 3, 4, 5 ] },
+    { "name": "Idle", "frames": [ 16 ] },
+    { "name": "Dying", "frames": [ 17 ] },
+    { "name": "Skidding", "frames": [ 18 ] },
+    { "name": "RunningInvincible", "frames": [ 24, 25, 26, 27, 28, 29 ] },
+    { "name": "FallingInvincible", "frames": [ 32, 33, 34, 35, 36, 37, 38, 39 ] },
+    { "name": "IdleInvincible", "frames": [ 40, 41, 42, 43, 44 ] }
+  ]
 }

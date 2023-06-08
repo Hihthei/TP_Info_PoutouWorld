@@ -29,6 +29,15 @@ Player::Player(Scene &scene) :
     );
     idleAnim->SetCycleCount(0);
 
+    // Animation "IdleInvincible"
+    part = atlas->GetPart("IdleInvincible");
+    AssertNew(part);
+    RE_TexAnim* idleInvincibleAnim = new RE_TexAnim(
+        m_animator, "IdleInvincible", part
+    );
+    idleInvincibleAnim->SetCycleCount(-1);
+    idleInvincibleAnim->SetCycleTime(0.2f);
+
     // Animation "Dead"
     part = atlas->GetPart("Dying");
     AssertNew(part);
@@ -46,6 +55,24 @@ Player::Player(Scene &scene) :
     fallingAnim->SetCycleCount(-1);
     fallingAnim->SetCycleTime(0.2f);
 
+    // Animation "FallingInvincible"
+    part = atlas->GetPart("FallingInvincible");
+    AssertNew(part);
+    RE_TexAnim* fallingInvincibleAnim = new RE_TexAnim(
+        m_animator, "FallingInvincible", part
+    );
+    fallingInvincibleAnim->SetCycleCount(-1);
+    fallingInvincibleAnim->SetCycleTime(0.2f);
+
+    // DID : ajouter l'animation "Running"
+    part = atlas->GetPart("RunningInvincible");
+    AssertNew(part);
+    RE_TexAnim* runningInvincibleAnim = new RE_TexAnim(
+        m_animator, "RunningInvincible", part
+    );
+    runningInvincibleAnim->SetCycleCount(-1);
+    runningInvincibleAnim->SetCycleTime(0.3f);
+
     // DID : ajouter l'animation "Running"
     part = atlas->GetPart("Running");
     AssertNew(part);
@@ -55,15 +82,14 @@ Player::Player(Scene &scene) :
     runningAnim->SetCycleCount(-1);
     runningAnim->SetCycleTime(0.3f);
 
-    /*
-    // Animation "Invicible"
+    
+    // Animation "Drift"
     part = atlas->GetPart("Skidding");
     AssertNew(part);
-    RE_TexAnim* invicibleAnim = new RE_TexAnim(
+    RE_TexAnim* driftAnim = new RE_TexAnim(
         m_animator, "Skidding", part
     );
-    idleAnim->SetCycleCount(0);
-    */
+    driftAnim->SetCycleCount(0);
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -215,8 +241,8 @@ void Player::FixedUpdate()
 
     // Les rayons ne touchent que des colliders solides (non trigger)
     // ayant la catégorie FILTER_TERRAIN
-    RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.55f, CATEGORY_TERRAIN, true);
-    RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.55f, CATEGORY_TERRAIN, true);
+    RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.35f, CATEGORY_TERRAIN, true);
+    RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.35f, CATEGORY_TERRAIN, true);
 
     if (hitL.collider != NULL)
     {
@@ -246,27 +272,55 @@ void Player::FixedUpdate()
     // Détermine l'état du joueur et change l'animation si nécessaire
 
     // DID : Ajouter la gestion des animations Idle et Falling
-    if (m_onGround)
+    if (m_invicibleState)
     {
-        if (m_state != State::RUNNING && (m_hDirection > 0.0f || m_hDirection < 0.0f))
+        if (m_onGround)
         {
-            m_state = State::RUNNING;
-            m_animator.PlayAnimation("Running");        
+            if (m_state != State::RUNNING && (m_hDirection > 0.0f || m_hDirection < 0.0f))
+            {
+                m_state = State::RUNNING;
+                m_animator.PlayAnimation("RunningInvincible");
+            }
+            else if (m_state != State::IDLE && m_hDirection == 0.0f)
+            {
+                m_state = State::IDLE;
+                m_animator.PlayAnimation("IdleInvincible");
+            }
         }
-        else if (m_state != State::IDLE && m_hDirection == 0.0f)
+        else
         {
-            m_state = State::IDLE;
-            m_animator.PlayAnimation("Idle");
+            if (m_state != State::FALLING)
+            {
+                m_state = State::FALLING;
+                m_animator.PlayAnimation("FallingInvincible");
+            }
         }
     }
     else
     {
-        if (m_state != State::FALLING)
+        if (m_onGround)
         {
-            m_state = State::FALLING;
-            m_animator.PlayAnimation("Falling");
+            if (m_state != State::RUNNING && (m_hDirection > 0.0f || m_hDirection < 0.0f))
+            {
+                m_state = State::RUNNING;
+                m_animator.PlayAnimation("Running");
+            }
+            else if (m_state != State::IDLE && m_hDirection == 0.0f)
+            {
+                m_state = State::IDLE;
+                m_animator.PlayAnimation("Idle");
+            }
+        }
+        else
+        {
+            if (m_state != State::FALLING)
+            {
+                m_state = State::FALLING;
+                m_animator.PlayAnimation("Falling");
+            }
         }
     }
+    
     //--------------------------------------------------------------------------
 
 
@@ -548,7 +602,7 @@ void Player::OnCollisionStay(GameCollision &collision)
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
         float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
-        if (angleUp <= 55.0f)
+        if (angleUp <= 40.0f)
         {
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
@@ -599,7 +653,7 @@ void Player::Damage(int count)
         m_lifeCount--;
         m_heartCount = 3;
     }
-    else if (m_heartCount > 0 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
+    else if (m_heartCount >= 1 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {
         m_statePlayer = State_Player::INVINCIBLE;
         m_invicibleState = true;
@@ -612,8 +666,6 @@ void Player::Damage(int count)
         m_lifeCount = 3;
     }
         //TODO -> retourner au menu
-
-    // TODO -> affichage graphique
 }
 
 void Player::Kill()

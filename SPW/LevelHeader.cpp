@@ -76,12 +76,10 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_lifeCount->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
     m_lifeCount->GetLocalRect().offsetMin.Set(currX, currY);
     m_lifeCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
-    m_lifeCount->SetParent(this);
+    m_lifeCount->SetParent(this); 
 //___________________________________________________________________________________//
 
-
-
-
+    //Mise à jour de la position pour les prochains éléments
 
     currX = 0;
     currY += imgH + sep + 3.0f;
@@ -129,6 +127,7 @@ LevelHeader::LevelHeader(LevelScene &scene):
 
 //___________________________________________________________________________________//
 
+    //Mise à jour de la position pour les prochains éléments
 
     currX = 0;
     currY += imgH + sep + 3.0f;
