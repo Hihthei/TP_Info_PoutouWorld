@@ -157,24 +157,10 @@ void Player::FixedUpdate()
 
     // test des états du joueur
 
-
-    // Chrono si le joueur meurt
-    /*
-    if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
-        m_timerDead += m_scene.GetFixedTimeStep();
-    else
-        m_timerDead = 0;
-    */
-
     // Animation de mort si le joueur meurt
-    //if (m_statePlayer == State_Player::DEAD)
-    //{
-    //    
-    //    m_statePlayer = State_Player::DYING;
+
     //    //TODO -> faire en sorte que le jeu s'arrête sauf l'animation du joueur
-    //    body->SetVelocity(PE_Vec2(0.7f, 5.0f));
-    //    m_animator.PlayAnimation("Dying");
-    //}
+
     if (m_statePlayer == State_Player::DYING)
     {
         body->ApplyForce(PE_Vec2(5.0f, 17.0f));
@@ -184,8 +170,8 @@ void Player::FixedUpdate()
     }
 
 
-    // Tue le joueur s'il tombe dans un trou ou qu'il d�passe le temps de mort
-    if (position.y < -2.0f || m_timerDead > 2.5f)
+    // Tue le joueur s'il tombe en dehors de la cate
+    if (position.y < -2.0f)
     {
         Kill();
         return;
@@ -200,6 +186,8 @@ void Player::FixedUpdate()
     {
         m_invicibleState = true;
         //        m_animator.PlayAnimation("Skidding");
+        // TODO -> faire le clignotement sur le joueur
+
         m_statePlayer = State_Player::INVINCIBLE_DELAY;
     }
     else if (m_invincibleDelay <= 2.0f && m_statePlayer == State_Player::INVINCIBLE_DELAY)
@@ -373,9 +361,24 @@ void Player::FixedUpdate()
     float maxHSpeed = 20.0f;
     velocity.x = PE_Clamp(velocity.x, -maxHSpeed, maxHSpeed);
 
+    /*if (m_jumpHold)
+    {
+        m_jumpDelay -= m_scene.GetFixedTimeStep();
+
+        if (m_onGround && (m_jumpDelay >= 0.0f))
+        {
+            printf("%.2f\n", m_jumpDelay);
+            velocity.y = 11.0f;
+            m_jump = false;
+        }
+
+    }
+    else
+        m_jumpDelay = 0.2; */
+
     if (m_jumpHold)
     {
-        m_jumpDelay = 0.2;
+        m_jumpDelay = 0.2f;
         if (m_onGround && (m_jumpDelay -= m_scene.GetFixedTimeStep()) >= 0.0f)
         {
             velocity.y = 11.0f;
@@ -417,7 +420,7 @@ void Player::OnRespawn()
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
 
-    m_heartCount = 2;
+//    m_heartCount = 2;
     m_state = State::IDLE;
     m_hDirection = 0.0f;
     m_fireflyCount = 0;
@@ -522,8 +525,6 @@ void Player::OnCollisionStay(GameCollision &collision)
         collision.SetEnabled(false);
         return;
     }
-    else
-        collision.SetEnabled(true);
 
 
     if (otherCollider->CheckCategory(CATEGORY_COLLECTABLE))
@@ -561,7 +562,7 @@ void Player::AddLife(int count)
 {
     m_lifeCount += count;
 
-    if (m_lifeCount == 0)
+    if (m_lifeCount <= 0)
         Kill();
 }
 
@@ -594,7 +595,11 @@ void Player::Damage(int count)
         Bounce();
     }
 
-    if (m_lifeCount == 0) ;
+    if (m_lifeCount == 0)
+    {
+        Kill();
+        m_lifeCount = 3;
+    }
         //TODO -> retourner au menu
 
     // TODO -> affichage graphique

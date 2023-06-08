@@ -34,6 +34,9 @@ LevelHeader::LevelHeader(LevelScene &scene):
 
     // Image du nombre de vies___________________________________________________________________
 
+    //TODO -> la boucle for qui marche pas
+
+    /*
 
     for (int i = 0; i < m_lifeCountInt; i++)
     {
@@ -47,9 +50,25 @@ LevelHeader::LevelHeader(LevelScene &scene):
         lifeImage->SetParent(this);
 
         currX += imgW + sep;
-    }
+    } */
+
+    RE_AtlasPart* partLife = atlas->GetPart("Life");
+    AssertNew(partLife);
+    Image* lifeImage = new Image(scene, partLife, 0);
+    lifeImage->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    lifeImage->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    lifeImage->GetLocalRect().offsetMin.Set(currX, currY);
+    lifeImage->GetLocalRect().offsetMax.Set(currX + imgW, currY + imgH);
+    lifeImage->SetParent(this);
+
+    currX += imgW + sep;
     
-/*    // Compteur du nombre de vies
+
+//___________________________________________________________________________________//
+//     Il faut enlever cette partie pour plus afficher les nombres
+ 
+ 
+    // Compteur du nombre de vies
     m_lifeCount = new Text(scene, "3", font, color);
     //TODO -> effacer le texte
     m_lifeCount->SetAnchor(RE_Anchor::WEST);
@@ -57,14 +76,20 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_lifeCount->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
     m_lifeCount->GetLocalRect().offsetMin.Set(currX, currY);
     m_lifeCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
-    m_lifeCount->SetParent(this); */
+    m_lifeCount->SetParent(this);
+//___________________________________________________________________________________//
+
+
+
+
 
     currX = 0;
     currY += imgH + sep + 3.0f;
 
 
     // Image du nombre de coeurs___________________________________________________________________
-    for (int i = 0; i < m_lifeCountInt; i++)
+
+/*    for (int i = 0; i < m_lifeCountInt; i++)
     {
         RE_AtlasPart* partHeart = atlas->GetPart("Heart");
         AssertNew(partHeart);
@@ -76,16 +101,34 @@ LevelHeader::LevelHeader(LevelScene &scene):
         heartImage->SetParent(this);
 
         currX += imgW + sep;
-    }
+    } */
     
- /*   // Compteur du nombre de coeurs
+    RE_AtlasPart* partHeart = atlas->GetPart("Heart");
+    AssertNew(partHeart);
+    Image* heartImage = new Image(scene, partHeart, 0);
+    heartImage->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    heartImage->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    heartImage->GetLocalRect().offsetMin.Set(currX, currY);
+    heartImage->GetLocalRect().offsetMax.Set(currX + imgW, currY + imgH);
+    heartImage->SetParent(this);
+
+    currX += imgW + sep;
+
+
+//___________________________________________________________________________________//
+//     Il faut enlever cette partie pour plus afficher les nombres
+
+    // Compteur du nombre de coeurs
     m_heartCount = new Text(scene, "3", font, color);
     m_heartCount->SetAnchor(RE_Anchor::WEST);
     m_heartCount->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
     m_heartCount->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
     m_heartCount->GetLocalRect().offsetMin.Set(currX, currY);
     m_heartCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
-    m_heartCount->SetParent(this); */
+    m_heartCount->SetParent(this);
+
+//___________________________________________________________________________________//
+
 
     currX = 0;
     currY += imgH + sep + 3.0f;
@@ -117,7 +160,13 @@ void LevelHeader::Update()
 {
     Player *player = m_levelScene.GetPlayer();
 
-    m_lifeCountInt = player->GetLifeCount();
+    m_fireflyCount->SetString(std::to_string(player->GetFireflyCount()));
 
-    m_heartCountInt = player->GetHeartCount();
+    m_lifeCount->SetString(std::to_string(player->GetLifeCount()));
+
+    m_heartCount->SetString(std::to_string(player->GetHeartCount()));
+
+//    m_lifeCountInt = player->GetLifeCount();
+
+//    m_heartCountInt = player->GetHeartCount();
 }
