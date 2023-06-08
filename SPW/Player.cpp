@@ -204,7 +204,10 @@ void Player::FixedUpdate()
     }
 
     if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING)
+    {
+        m_animator.PlayAnimation("Dying");
         return;
+    }
 
     // Chrono si le joueur et invincible
 
@@ -256,15 +259,6 @@ void Player::FixedUpdate()
         m_onGround = true;
         gndNormal = hitR.normal;
     }
-    if (hitR.collider != NULL && hitL.collider == NULL)
-    {
-        printf("pente vers la gauche\n");
-    }
-    else if (hitL.collider != NULL && hitR.collider == NULL)
-    {
-        printf("pente vers la droite\n");
-    }
-    printf("%i", m_onGround);
 
     //--------------------------------------------------------------------------
     // Etat du joueur
@@ -377,8 +371,16 @@ void Player::FixedUpdate()
             // On met à jour l'animation en fonction de la vitesse
             m_animSpeedValue += 0.01f;
 
-            RE_Animation* anim = m_animator.GetAnimation("Running");
-            anim->SetSpeed(m_animSpeedValue);
+            if (m_invicibleState)
+            {
+                RE_Animation* anim = m_animator.GetAnimation("RunningInvincible");
+                anim->SetSpeed(m_animSpeedValue);
+            }
+            else
+            {
+                RE_Animation* anim = m_animator.GetAnimation("Running");
+                anim->SetSpeed(m_animSpeedValue);
+            }
         }
     }
     else if (m_hDirection < 0.0f)
@@ -404,8 +406,16 @@ void Player::FixedUpdate()
             // On met à jour l'animation en fonction de la vitesse
             m_animSpeedValue += 0.01f;
 
-            RE_Animation* anim = m_animator.GetAnimation("Running");
-            anim->SetSpeed(m_animSpeedValue);
+            if (m_invicibleState)
+            {
+                RE_Animation* anim = m_animator.GetAnimation("RunningInvincible");
+                anim->SetSpeed(m_animSpeedValue);
+            }
+            else
+            {
+                RE_Animation* anim = m_animator.GetAnimation("Running");
+                anim->SetSpeed(m_animSpeedValue);
+            }
         }
     }
     
@@ -602,7 +612,7 @@ void Player::OnCollisionStay(GameCollision &collision)
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
         float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
-        if (angleUp <= 40.0f)
+        if (angleUp <= 30.0f)
         {
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
