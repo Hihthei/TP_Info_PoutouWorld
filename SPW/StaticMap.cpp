@@ -20,6 +20,11 @@ StaticMap::StaticMap(Scene &scene, int width, int height) :
         }
     }
 
+    RE_Atlas* atlas2 = scene.GetAssetManager().GetAtlas(AtlasID::GTERRAIN);
+
+    m_gterrainPart = atlas2->GetPart("Terrain");
+    AssertNew(m_gterrainPart);
+
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
 
     m_woodPart = atlas->GetPart("Wood");
@@ -89,20 +94,58 @@ void StaticMap::InitTiles()
             switch (type)
             {
             case Tile::Type::GROUND:
-                if (IsGround(x, y + 1))
+                if (IsGround(x, y + 1) && IsGround(x + 1, y) && (IsGround(x + 1, y + 1) == false))
+                    tile.partIdx = 7;
+                else if (IsGround(x, y + 1) && IsGround(x - 1, y) && IsGround(x - 1, y + 1) == false)
+                    tile.partIdx = 6;
+                else if (IsGround(x, y + 1) && IsGround(x + 1, y) && IsGround(x - 1, y))
                 {
                     tile.partIdx = 4;
                 }
                 else if (IsGround(x + 1, y) == false)
                 {
-                    if (IsGround(x - 1, y))
+                    if (IsGround(x - 1, y) && IsGround(x, y + 1) == false)
                         tile.partIdx = 2;
+                    else if (IsGround(x, y + 1))
+                        tile.partIdx = 5;
                     else tile.partIdx = 1;
                 }
                 else if (IsGround(x - 1, y) == false)
                 {
-                    if (IsGround(x + 1, y))
+                    if (IsGround(x + 1, y) && IsGround(x, y + 1) == false)
                         tile.partIdx = 0;
+                    else if (IsGround(x, y + 1))
+                        tile.partIdx = 3;
+                    else tile.partIdx = 1;
+                }
+                else
+                {
+                    tile.partIdx = 1;
+                }
+                break;
+            case Tile::Type::GGROUND:
+                if (IsGround(x, y + 1) && IsGround(x + 1, y) && (IsGround(x + 1, y + 1) == false))
+                    tile.partIdx = 7;
+                else if (IsGround(x, y + 1) && IsGround(x - 1, y) && IsGround(x - 1, y + 1) == false)
+                    tile.partIdx = 6;
+                else if (IsGround(x, y + 1) && IsGround(x + 1, y) && IsGround(x - 1, y))
+                {
+                    tile.partIdx = 4;
+                }
+                else if (IsGround(x + 1, y) == false)
+                {
+                    if (IsGround(x - 1, y) && IsGround(x, y + 1) == false)
+                        tile.partIdx = 0;
+                    else if (IsGround(x, y + 1))
+                        tile.partIdx = 5;
+                    else tile.partIdx = 1;
+                }
+                else if (IsGround(x - 1, y) == false)
+                {
+                    if (IsGround(x + 1, y) && IsGround(x, y + 1) == false)
+                        tile.partIdx = 2;
+                    else if (IsGround(x, y + 1))
+                        tile.partIdx = 3;
                     else tile.partIdx = 1;
                 }
                 else
@@ -181,6 +224,9 @@ void StaticMap::Render()
             case Tile::Type::GROUND:
                 m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
                 break;
+            case Tile::Type::GGROUND:
+                m_gterrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
             case Tile::Type::STEEP_SLOPE_L:
                 m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
                 break;
@@ -254,6 +300,10 @@ void StaticMap::Start()
                 break;
 
             case Tile::Type::GROUND:
+                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                break;
+            case Tile::Type::GGROUND:
+                colliderDef.friction = 0.005f;
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
             case Tile::Type::WOOD:

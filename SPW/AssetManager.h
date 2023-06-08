@@ -4,7 +4,7 @@
 
 enum class AtlasID : uint32_t
 {
-    COLLECTABLE, ENEMY, LOGO, PLAYER, TERRAIN, UI
+    COLLECTABLE, ENEMY, LOGO, PLAYER, TERRAIN, GTERRAIN, UI
 };
 enum class FontID : uint32_t
 {

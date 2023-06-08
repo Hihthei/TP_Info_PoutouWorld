@@ -7,7 +7,7 @@ struct Tile
 {
     enum class Type : int
     {
-        EMPTY, GROUND, WOOD, ONE_WAY, SPIKE,
+        EMPTY, GROUND, GGROUND, WOOD, ONE_WAY, SPIKE,
         STEEP_SLOPE_L, STEEP_SLOPE_R,
         GENTLE_SLOPE_L, GENTLE_SLOPE_R,
     };
@@ -34,6 +34,7 @@ private:
     RE_AtlasPart *m_woodPart;
     RE_AtlasPart *m_oneWayPart;
     RE_AtlasPart *m_terrainPart;
+    RE_AtlasPart* m_gterrainPart;
     RE_AtlasPart *m_spikePart;
     RE_AtlasPart* m_steepslopel;
     RE_AtlasPart* m_steepsloper;

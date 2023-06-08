@@ -167,6 +167,9 @@ void LevelParser::InitScene(LevelScene &scene) const
             case '#':
                 map->SetTile(x, y, Tile::Type::GROUND);
                 break;
+            case 'i':
+                map->SetTile(x, y, Tile::Type::GGROUND);
+                break;
             case 'W':
                 map->SetTile(x, y, Tile::Type::WOOD);
                 break;

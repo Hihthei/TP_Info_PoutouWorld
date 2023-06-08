@@ -102,6 +102,9 @@ RE_Atlas *AssetManager::GetAtlas(AtlasID atlasID)
         case AtlasID::TERRAIN:
             path.assign("../Assets/Atlas/Terrain.json");
             break;
+        case AtlasID::GTERRAIN:
+            path.assign("../Assets/Atlas/Terrain_Glace.json");
+            break;
         case AtlasID::UI:
             path.assign("../Assets/Atlas/UI.json");
             break;
