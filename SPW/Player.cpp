@@ -199,6 +199,12 @@ void Player::FixedUpdate()
     // Tue le joueur s'il tombe en dehors de la cate
     if (position.y < -2.0f)
     {
+        if (m_lifeCount == 1)
+        {
+            m_scene.Quit();
+            return;
+        }
+
         Kill();
         return;
     }
@@ -636,9 +642,6 @@ void Player::AddFirefly(int count)
 void Player::AddLife(int count)
 {
     m_lifeCount += count;
-
-    if (m_lifeCount <= 0)
-        Kill();
 }
 
 void Player::AddHeart(int count)
@@ -660,8 +663,6 @@ void Player::Damage(int count)
     if (m_heartCount == 0)
     {
         m_statePlayer = State_Player::DEAD;
-        m_lifeCount--;
-        m_heartCount = 3;
     }
     else if (m_heartCount >= 1 &&  m_statePlayer != State_Player::DYING && m_statePlayer != State_Player::DEAD )
     {
@@ -669,18 +670,14 @@ void Player::Damage(int count)
         m_invicibleState = true;
         Bounce();
     }
-
-    if (m_lifeCount == 0)
-    {
-        Kill();
-        m_lifeCount = 3;
-    }
         //TODO -> retourner au menu
 }
 
 void Player::Kill()
 {
     m_statePlayer = State_Player::ALIVE;
+    AddLife(-1);
+    m_heartCount = 3;
     m_scene.Respawn();
 }
 
@@ -705,5 +702,4 @@ void Player::WakeUpSurroundings()
     );
     WakeUpCallback callback;
     world.QueryAABB(callback, aabb);
-
 }
