@@ -636,7 +636,10 @@ void Player::AddFirefly(int count)
 {
     m_fireflyCount += count;
     if (m_fireflyCount >= 30)
-        AddHeart(1);
+    {
+        AddLife(1);
+        m_fireflyCount = 0;
+    }
 }
 
 void Player::AddLife(int count)
