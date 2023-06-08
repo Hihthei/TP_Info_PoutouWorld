@@ -203,6 +203,8 @@ void Player::FixedUpdate()
     // Détection du sol
 
     bool m_onGround = false;
+    bool m_onSloper = false;
+    bool m_onSlopel = false;
     PE_Vec2 gndNormal = PE_Vec2::up;
 
     // Lance deux rayons vers le bas ayant pour origines
@@ -213,8 +215,8 @@ void Player::FixedUpdate()
 
     // Les rayons ne touchent que des colliders solides (non trigger)
     // ayant la catégorie FILTER_TERRAIN
-    RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
-    RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
+    RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.55f, CATEGORY_TERRAIN, true);
+    RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.55f, CATEGORY_TERRAIN, true);
 
     if (hitL.collider != NULL)
     {
@@ -228,6 +230,15 @@ void Player::FixedUpdate()
         m_onGround = true;
         gndNormal = hitR.normal;
     }
+    if (hitR.collider != NULL && hitL.collider == NULL)
+    {
+        printf("pente vers la gauche\n");
+    }
+    else if (hitL.collider != NULL && hitR.collider == NULL)
+    {
+        printf("pente vers la droite\n");
+    }
+    printf("%i", m_onGround);
 
     //--------------------------------------------------------------------------
     // Etat du joueur

@@ -69,6 +69,8 @@ private:
     float m_jumpDelay;
 
     bool m_onGround;
+    bool m_onSloper;
+    bool m_onSlopel;
     bool m_bounce;
     bool m_facingRight;
     bool m_stateRunning;
