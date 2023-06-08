@@ -53,7 +53,7 @@
 
 	- Noisette 1 : 	Fonce en direction du joueur et va le suivre jusqu'à la mort.
 			Se désactive si elle est en dehors du champ de vision.
-	- Noisette 2 : 	Rebondit sur les murs et entres les noisettes // TODO
+	- Noisette 2 : 	Rebondit sur les murs et entres les noisettes.
 
 
 - Objets collectibles :
@@ -81,6 +81,8 @@
 		- Une grande platforme qui va tomber si le joueur marche dessus, remonte une fois arriver en bas.
 
 	- Bloc cassable
+
+	- Bloc de glace
 
 	- Pentes :
 	Il y a 2 types de pentes :
