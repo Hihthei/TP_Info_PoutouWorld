@@ -11,6 +11,7 @@
 #include "Checkpoint.h"
 #include "Nut.h"
 #include "Boss.h"
+#include "Totem.h"
 #include "nutdebile.h"
 #include "Firefly.h"
 #include "Heart.h"
@@ -221,7 +222,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             case 'T':
             {
                 //creer le totem du Boss
-                Boss::Totem* totem = new Boss::Totem(scene);
+                Totem* totem = new Totem(scene);
                 totem->SetStartPosition(position);
                 break;
             }

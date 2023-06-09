@@ -18,20 +18,6 @@ public:
 
     virtual void OnCollisionStay(GameCollision& collision) override;
 
-    class Totem : public GameBody
-    {
-    public:
-        Totem(Scene& scene);
-
-        virtual void Start() override;
-        virtual void Render() override;
-        virtual void OnCollisionEnter(GameCollision& collision) override;
-
-    private:
-        RE_Animator m_animator;
-        bool m_isActive;
-    };
-
 private:
     RE_Animator m_animator;
 
@@ -41,9 +27,9 @@ private:
     };
     State m_state;
 
-    Totem* b_totem;
-
     float b_globalTimer;
 
     bool b_onScreen;
+
+    int m_heartCount;
 };

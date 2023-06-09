@@ -159,6 +159,8 @@ void LevelHeader::Update()
 {
     Player *player = m_levelScene.GetPlayer();
 
+    
+
     m_fireflyCount->SetString(std::to_string(player->GetFireflyCount()));
 
     m_lifeCount->SetString(std::to_string(player->GetLifeCount()));

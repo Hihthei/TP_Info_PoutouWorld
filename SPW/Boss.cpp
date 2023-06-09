@@ -93,7 +93,7 @@ void Boss::FixedUpdate()
     
 
     
-    float maxHValue = player->GetPosition().y + 7.0f;
+    float maxHValue = player->GetPosition().y + 5.0f;
 
     float dist = PE_Distance(position, player->GetPosition());
     
@@ -106,11 +106,7 @@ void Boss::FixedUpdate()
     if (dist <= 14.0f)
     {
         if (m_state != State::DEAD && m_state != State::DYING && position.y < (maxHValue - 2))
-        {
-            body->SetVelocity(PE_Vec2(0.0f, 3.0f));
-        }
-        else if (m_state != State::DEAD && m_state != State::DYING && position.y > (maxHValue))
-            body->SetVelocity(PE_Vec2(0.0f, -3.0f));
+            body->SetVelocity(PE_Vec2(0.0f, 0.0f));
     }
 
     if (m_state == State::DEAD)

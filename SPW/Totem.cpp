@@ -1,9 +1,11 @@
+#include "Totem.h"
 #include "Boss.h"
+
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
 
-Boss::Totem::Totem(Scene& scene) :
+Totem::Totem(Scene& scene) :
     GameBody(scene, Layer::TERRAIN_BACKGROUND), m_animator(), m_isActive(false)
 {
     m_name = "Boss";
@@ -20,7 +22,7 @@ Boss::Totem::Totem(Scene& scene) :
     anim->SetCycleCount(0);
 }
 
-void Boss::Totem::Start()
+void Totem::Start()
 {
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Totem");
@@ -41,9 +43,11 @@ void Boss::Totem::Start()
     colliderDef.shape = &box;
     colliderDef.isTrigger = true;
     PE_Collider* collider = body->CreateCollider(colliderDef);
+
+    position = body->GetPosition();
 }
 
-void Boss::Totem::Render()
+void Totem::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
@@ -57,16 +61,17 @@ void Boss::Totem::Render()
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
-void Boss::Totem::OnCollisionEnter(GameCollision& collision)
+void Totem::OnCollisionEnter(GameCollision& collision)
 {
     Player* player = dynamic_cast<Player*>(collision.gameBody);
     if (player == nullptr)
         return;
 
-    if (player->GetStatePlayer())
+    if (player->GetStatePlayer() && m_isActive == false)
     {
         m_isActive = true;
-        printf("1.0\n");
+        Boss* boss = new Boss(m_scene);
+        boss->SetStartPosition(position);
     }
 }
 
