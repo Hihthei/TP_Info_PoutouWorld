@@ -14,4 +14,5 @@ private:
     RE_Animator m_animator;
     bool m_isActive;
     PE_Vec2 position;
+    PE_Vec2 positionSpawnBoss;
 };

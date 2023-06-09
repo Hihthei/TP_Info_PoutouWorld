@@ -14,22 +14,27 @@ public:
     virtual void Render() override;
     virtual void OnRespawn() override;
 
+    void AddHeart(int count);
+    void Kill();
     virtual void Damage(GameBody* damager) override;
 
+    virtual void OnCollisionEnter(GameCollision& collision) override;
     virtual void OnCollisionStay(GameCollision& collision) override;
 
 private:
-    RE_Animator m_animator;
+    RE_Animator b_animator;
 
     enum class State
     {
-        IDLE, DYING, DEAD, ATTACKING
+        IDLE, DYING, DEAD, INVINCIBLE, INVINCIBLE_DELAY
     };
-    State m_state;
+    State b_state;
 
     float b_globalTimer;
+    float b_invincibleDelay;
 
     bool b_onScreen;
+    bool b_invicibleState;
 
-    int m_heartCount;
+    int b_heartCount;
 };
