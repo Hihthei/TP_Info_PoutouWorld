@@ -47,7 +47,7 @@ void Totem::Start()
     position = body->GetPosition();
     positionSpawnBoss = position;
     positionSpawnBoss.x -= 3.0f;
-    positionSpawnBoss.y += 10.0f;
+    positionSpawnBoss.y += 7.0f;
 }
 
 void Totem::Render()

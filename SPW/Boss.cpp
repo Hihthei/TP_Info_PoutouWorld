@@ -22,13 +22,6 @@ Boss::Boss(Scene& scene) :
     AssertNew(part);
     idleAnim = new RE_TexAnim(b_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
-
-    // Animation "Invincible"
-    part = atlas->GetPart("Invincible");
-    AssertNew(part);
-    invincibleAnim = new RE_TexAnim(b_animator, "Invincible", part);
-    invincibleAnim->SetCycleCount(-1);
-    invincibleAnim->SetCycleTime(0.2f);
 }
 
 Boss::~Boss()
@@ -205,8 +198,6 @@ void Boss::AddHeart(int count)
     }
 
     b_heartCount += count;
-
-    printf("Il reste %d coeurs au boss\n", b_heartCount);
 }
 
 void Boss::Kill()

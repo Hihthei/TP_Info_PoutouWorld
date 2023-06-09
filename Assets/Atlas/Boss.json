@@ -1,14 +1,13 @@
 {
     "texture": "Boss.png",
     "geometry": {
-        "rowCount": 2,
-        "colCount": 6,
-        "width": 960,
-        "height": 420
+        "rowCount": 1,
+        "colCount": 2,
+        "width": 160,
+        "height": 210
     },
     "parts": [
-      { "name": "Idle", "frames": [0] },
-      { "name": "Totem", "frames": [1] },
-      { "name": "Invincible", "frames": [6,7,8,9,10,11] }
+      { "name": "Idle", "frames": [ 0 ] },
+      { "name": "Totem", "frames": [ 1 ] }
     ]
 }
