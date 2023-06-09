@@ -1,0 +1,13 @@
+{
+    "texture": "Boss.png",
+    "geometry": {
+        "rowCount": 1,
+        "colCount": 2,
+        "width": 160,
+        "height": 210
+    },
+    "parts": [
+      { "name": "Idle", "frames": [ 0 ] },
+      { "name": "Totem", "frames": [ 1 ] }
+    ]
+}

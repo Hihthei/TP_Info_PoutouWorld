@@ -10,6 +10,7 @@
 #include "LevelScene.h"
 #include "Checkpoint.h"
 #include "Nut.h"
+#include "Boss.h"
 #include "nutdebile.h"
 #include "Firefly.h"
 #include "Heart.h"
@@ -208,6 +209,20 @@ void LevelParser::InitScene(LevelScene &scene) const
                 //creer un checkpoint
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
+                break;
+            }
+            case '!':
+            {
+                //creer un Boss
+                Boss* boss = new Boss(scene);
+                boss->SetStartPosition(position);
+                break;
+            }
+            case 'T':
+            {
+                //creer le totem du Boss
+                Boss::Totem* totem = new Boss::Totem(scene);
+                totem->SetStartPosition(position);
                 break;
             }
             case 'e':

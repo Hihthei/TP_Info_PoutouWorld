@@ -1,44 +1,36 @@
-#include "Checkpoint.h"
+#include "Boss.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
 
-Checkpoint::Checkpoint(Scene &scene) :
+Boss::Totem::Totem(Scene& scene) :
     GameBody(scene, Layer::TERRAIN_BACKGROUND), m_animator(), m_isActive(false)
 {
-    m_name = "Checkpoint";
+    m_name = "Boss";
     RE_TexAnim* anim;
     RE_AtlasPart* part;
     RE_Atlas* atlas;
 
-    // Animation "Empty"
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
+    // Animation "Totem"
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
     AssertNew(atlas);
-    part = atlas->GetPart("CheckpointEmpty");
+    part = atlas->GetPart("Totem");
     AssertNew(part);
-    anim = new RE_TexAnim(m_animator, "Empty", part);
-    anim->SetCycleCount(0);
-
-    // Animation "Full"
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
-    AssertNew(atlas);
-    part = atlas->GetPart("CheckpointFull");
-    AssertNew(part);
-    anim = new RE_TexAnim(m_animator, "Full", part);
+    anim = new RE_TexAnim(m_animator, "Totem", part);
     anim->SetCycleCount(0);
 }
 
-void Checkpoint::Start()
+void Boss::Totem::Start()
 {
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Empty");
+    m_animator.PlayAnimation("Totem");
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-    bodyDef.name = "Checkpoint";
+    bodyDef.name = "Totem";
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
@@ -51,7 +43,7 @@ void Checkpoint::Start()
     PE_Collider* collider = body->CreateCollider(colliderDef);
 }
 
-void Checkpoint::Render()
+void Boss::Totem::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
@@ -65,7 +57,7 @@ void Checkpoint::Render()
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
-void Checkpoint::OnCollisionEnter(GameCollision &collision)
+void Boss::Totem::OnCollisionEnter(GameCollision& collision)
 {
     Player* player = dynamic_cast<Player*>(collision.gameBody);
     if (player == nullptr)
@@ -73,7 +65,8 @@ void Checkpoint::OnCollisionEnter(GameCollision &collision)
 
     if (player->GetStatePlayer())
     {
-        player->SetStartPosition(GetStartPosition());
-        m_animator.PlayAnimation("Full");
-    }  
+        m_isActive = true;
+        printf("1.0\n");
+    }
 }
+

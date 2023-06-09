@@ -206,6 +206,12 @@
     <ClCompile Include="nutdebile.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Totem.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -359,6 +365,12 @@
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="nutdebile.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Totem.h">
       <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

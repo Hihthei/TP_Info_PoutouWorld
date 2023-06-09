@@ -96,8 +96,8 @@ int main(int argc, char *argv[])
     }
 
     // Crée le temps global du jeu
-    RE_Timer time;
-    time.Start();
+    RE_Timer timer;
+    timer.Start();
 
     // Boucle de jeu
     Scene *scene = nullptr;
@@ -113,19 +113,19 @@ int main(int argc, char *argv[])
 
     while (quitGame == false)
     {
-        time.SetTimeScale(1.0f);
+        timer.SetTimeScale(1.0f);
 
         // Construction de la scène
         switch (state)
         {
         case GameState::LEVEL:
             assert(0 <= levelID && levelID < levels.size());
-            scene = new LevelScene(renderer, time, levels[levelID]);
+            scene = new LevelScene(renderer, timer, levels[levelID]);
             break;
 
         case GameState::MAIN_MENU:
         default:
-            scene = new TitleScene(renderer, time, levels);
+            scene = new TitleScene(renderer, timer, levels);
             break;
         }
 
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
         while (true)
         {
             // Met à jour le temps
-            time.Update();
+            timer.Update();
 
             // Met à jour la scène
             bool quit = scene->Update();

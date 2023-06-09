@@ -93,6 +93,9 @@ RE_Atlas *AssetManager::GetAtlas(AtlasID atlasID)
         case AtlasID::ENEMY:
             path.assign("../Assets/Atlas/Enemy.json");
             break;
+        case AtlasID::BOSS:
+            path.assign("../Assets/Atlas/Boss.json");
+            break;
         case AtlasID::LOGO:
             path.assign("../Assets/Atlas/Logo.json");
             break;
