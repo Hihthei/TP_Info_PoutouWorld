@@ -20,7 +20,7 @@ std::vector<LevelData> LevelData::Init()
         ThemeID::SKY
     ));
     data.push_back(LevelData(
-        u8"test",
+        u8"BOSS",
         u8"../Assets/Level/levelboss.txt",
         ThemeID::SKY
     ));
