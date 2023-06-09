@@ -19,6 +19,8 @@ public:
     virtual void OnCollisionStay(GameCollision& collision) override;
     virtual void OnCollisionEnter(GameCollision& collision) override;
 
+    virtual void SetSpawnStatue(bool bolleen);
+
 private:
     RE_Animator m_animator;
     bool dir, dir2, dir3 ;
@@ -27,4 +29,6 @@ private:
         IDLE, SPINNING, DYING, DYING2, ATTACKING
     };
     State m_state;
+
+    bool m_spawnedByBoss;
 };

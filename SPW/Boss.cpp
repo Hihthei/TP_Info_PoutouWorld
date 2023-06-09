@@ -1,4 +1,5 @@
 #include "Boss.h"
+#include "nutdebile.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "LevelScene.h"
@@ -6,7 +7,7 @@
 #include "Utils.h"
 
 Boss::Boss(Scene& scene) :
-    Enemy(scene), b_animator(), b_state(State::IDLE), b_onScreen(false), b_heartCount(5)
+    Enemy(scene), b_animator(), b_state(State::IDLE), b_onScreen(false), b_heartCount(5), b_right(true), b_left(false)
 {
     m_name = "Boss";
 
@@ -14,12 +15,20 @@ Boss::Boss(Scene& scene) :
     AssertNew(atlas);
     RE_AtlasPart* part;
     RE_TexAnim* idleAnim;
+    RE_TexAnim* invincibleAnim;
 
     // Animation "Idle"
     part = atlas->GetPart("Idle");
     AssertNew(part);
     idleAnim = new RE_TexAnim(b_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
+
+    // Animation "Invincible"
+    part = atlas->GetPart("Invincible");
+    AssertNew(part);
+    invincibleAnim = new RE_TexAnim(b_animator, "Invincible", part);
+    invincibleAnim->SetCycleCount(-1);
+    invincibleAnim->SetCycleTime(0.2f);
 }
 
 Boss::~Boss()
@@ -43,14 +52,15 @@ void Boss::Start()
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
 
-    // Crée le collider
-    PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
+    // Crée le collider droit
+    PE_CapsuleShape capsule(PE_Vec2(0.09f, 0.40f), PE_Vec2(0.09f, 0.58f), 0.40f);
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.000f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
     colliderDef.filter.maskBits = CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
-    colliderDef.shape = &circle;
+    colliderDef.shape = &capsule;
     PE_Collider* collider = body->CreateCollider(colliderDef);
+
 
     body->SetGravityScale(0.0f);
 
@@ -69,8 +79,7 @@ void Boss::FixedUpdate()
     // Tue le boss si il tombe dans un trou
     if (position.y < -2.0f)
     {
-        SetEnabled(false);
-        SetToRespawn(true);
+        Kill();
         return;
     }
 
@@ -88,13 +97,15 @@ void Boss::FixedUpdate()
 
     Player* player = levelScene->GetPlayer();
 
-    b_globalTimer += m_scene.GetFixedTimeStep();
+    b_skillsTimer += m_scene.GetFixedTimeStep();
+    b_invincibleTimer += m_scene.GetFixedTimeStep();
 
     // Chrono si le joueur et invincible
 
     if (b_state == State::INVINCIBLE)
     {
         b_invicibleState = true;
+        b_animator.PlayAnimation("Idle");
 
         b_state = State::INVINCIBLE_DELAY;
     }
@@ -106,33 +117,51 @@ void Boss::FixedUpdate()
         b_invincibleDelay = 0.0f;
         b_invicibleState = false;
     }
-
-    if (b_invicibleState)
-        printf("%.2f\n", b_invincibleDelay);
     
     float maxHValue = player->GetPosition().y + 5.0f;
 
-    float dist = PE_Distance(position, player->GetPosition());
-    
-    if (dist > 24.0f)
-    {
-        body->SetAwake(false);
+    float maxXLeftValue = player->GetPosition().x - 5.0f;
 
-        return;
-    }
-    if (dist <= 14.0f)
+    float maxXRightValue = player->GetPosition().x + 5.0f;
+
+    float distX = PE_DistanceX(position, player->GetPosition());
+
+    if (distX < -7.0f)
     {
-        if (b_state != State::DEAD && b_state != State::DYING && position.y < (maxHValue - 2))
-            body->SetVelocity(PE_Vec2(0.0f, 0.0f));
+        b_right = true;
+        b_left = false;
+    }
+    else if (distX > 7.0f)
+    {
+        b_right = false;
+        b_left = true;
     }
 
-    if (b_state == State::DEAD)
+    position.x = PE_Clamp(position.x, maxXLeftValue, maxXRightValue);
+
+    if (b_right)
     {
-        body->SetGravityScale(0.4f);
-        b_animator.PlayAnimation("Idle");
-        b_state = State::DYING;
+        body->SetVelocity(PE_Vec2(3.0f, 0.0f));
     }
-    
+    else if (b_left)
+    {
+        body->SetVelocity(PE_Vec2(-3.0f, 0.0f));
+    }
+
+    if (b_skillsTimer > 10.0f)
+    {
+        b_skillsTimer = 0.0f;
+        nutdebile* nut = new nutdebile(m_scene);
+
+        nut->SetSpawnStatue(true);
+
+        PE_Vec2 setNutPosition = position + PE_Vec2(0.0f, -0.5f);
+
+        nut->SetStartPosition(setNutPosition);
+    }
+
+    if (b_invincibleTimer > 15.0f)
+        b_state = State::INVINCIBLE;
 }
 
 void Boss::Render()
@@ -229,12 +258,6 @@ void Boss::OnCollisionStay(GameCollision& collision)
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        if (b_invicibleState)
-        {
-            printf("ici c'est invincible\n");
-            return;
-        }
-
         Player* player = dynamic_cast<Player*>(collision.gameBody);
         if (player == nullptr)
         {
@@ -253,6 +276,21 @@ void Boss::OnCollisionStay(GameCollision& collision)
     }
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
+        
+        float angleRight = PE_SignedAngleDeg(manifold.normal, (PE_Vec2::right));
+        if (fabsf(angleRight) <= 10)
+        {
+            b_right = false;
+            b_left = true;
+        }
+        /*
+        float angleLeft = PE_SignedAngleDeg(manifold.normal, (PE_Vec2::left));
+        if (fabsf(angleLeft) <= 10)
+        {
+            b_right = true;
+            b_left = false;
+        }*/
+        
         collision.SetEnabled(false);
         return;
     }

@@ -30,11 +30,16 @@ private:
     };
     State b_state;
 
-    float b_globalTimer;
+    float b_skillsTimer;
+    float b_invincibleTimer;
     float b_invincibleDelay;
+
 
     bool b_onScreen;
     bool b_invicibleState;
+    bool b_right;
+    bool b_left;
+
 
     int b_heartCount;
 };

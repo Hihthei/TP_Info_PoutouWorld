@@ -4,7 +4,7 @@
 #include "LevelScene.h"
 #include "Graphics.h"
 nutdebile::nutdebile(Scene& scene) :
-    Enemy(scene), m_animator(), m_state(State::IDLE)
+    Enemy(scene), m_animator(), m_state(State::IDLE), m_spawnedByBoss(false)
 {
     m_name = "nutdebile";
 
@@ -68,6 +68,8 @@ void nutdebile::Start()
     colliderDef.shape = &circle;
     PE_Collider* collider = body->CreateCollider(colliderDef);
 
+    body->SetGravityScale(3.0f);
+
     // Endort le corps
     // Permet d'optimiser le calcul de la physique,
     // seuls les corps proches du joueur sont simulés
@@ -85,7 +87,12 @@ void nutdebile::FixedUpdate()
     if (position.y < -2.0f)
     {
         SetEnabled(false);
-        SetToRespawn(true);
+
+        if(!m_spawnedByBoss)
+            SetToRespawn(true);
+        else
+            SetToRespawn(false);
+
         return;
     }
 
@@ -220,6 +227,11 @@ void nutdebile::OnCollisionEnter(GameCollision& collision)
             dir3 = true;
         }
     }
+}
+
+void nutdebile::SetSpawnStatue(bool bolleen)
+{
+    m_spawnedByBoss = bolleen;
 }
 
 void nutdebile::OnCollisionStay(GameCollision& collision)

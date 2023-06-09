@@ -66,15 +66,21 @@ void Totem::Render()
 
 void Totem::OnCollisionEnter(GameCollision& collision)
 {
-    Player* player = dynamic_cast<Player*>(collision.gameBody);
-    if (player == nullptr)
-        return;
+    const PE_Manifold& manifold = collision.manifold;
+    PE_Collider* otherCollider = collision.otherCollider;
 
-    if (player->GetStatePlayer() && m_isActive == false)
+    if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-//        m_isActive = true;
-        Boss* boss = new Boss(m_scene);
-        boss->SetStartPosition(positionSpawnBoss);
+        Player* player = dynamic_cast<Player*>(collision.gameBody);
+        if (player == nullptr)
+            return;
+
+        if (player->GetStatePlayer() && m_isActive == false)
+        {
+            m_isActive = true;
+            Boss* boss = new Boss(m_scene);
+            boss->SetStartPosition(positionSpawnBoss);
+        }
     }
 }
 
