@@ -11,7 +11,7 @@ std::vector<LevelData> LevelData::Init()
 
     data.push_back(LevelData(
         u8"Montagnes",
-        u8"../Assets/Level/Level01.txt",
+        u8"../Assets/Level/Level1.txt",
         ThemeID::MOUNTAINS
     ));
     data.push_back(LevelData(
