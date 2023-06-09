@@ -8,7 +8,7 @@ LevelData::LevelData(const std::string &nameIn, const std::string &pathIn, Theme
 std::vector<LevelData> LevelData::Init()
 {
     std::vector<LevelData> data;
-
+    
     data.push_back(LevelData(
         u8"Niveau 1",
         u8"../Assets/Level/Level1.txt",
@@ -21,7 +21,7 @@ std::vector<LevelData> LevelData::Init()
     ));
     data.push_back(LevelData(
         u8"test",
-        u8"../Assets/Level/test.txt",
+        u8"../Assets/Level/levelboss.txt",
         ThemeID::SKY
     ));
     data.push_back(LevelData(
