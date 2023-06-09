@@ -393,7 +393,7 @@ void StaticMap::Start()
     }
 
     // Limite à gauche du monde
-    polygon.SetAsBox(-1.0f, -2.0f, 0.0f, (float)m_height + 10.0f);
+    polygon.SetAsBox(-1.0f, -2.0f, 0.5f, (float)m_height + 10.0f);
     colliderDef.SetDefault();
     colliderDef.friction = 0.0f;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
@@ -401,7 +401,7 @@ void StaticMap::Start()
     body->CreateCollider(colliderDef);
 
     // Limite à droite du monde
-    polygon.SetAsBox((float)m_width, -2.0f, (float)m_width + 1.0f, (float)m_height + 10.0f);
+    polygon.SetAsBox((float)m_width-0.5, -2.0f, (float)m_width + 1.0f, (float)m_height + 10.0f);
     colliderDef.SetDefault();
     colliderDef.friction = 0.0f;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
