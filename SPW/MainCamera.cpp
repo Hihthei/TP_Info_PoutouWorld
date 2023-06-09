@@ -31,4 +31,16 @@ void MainCamera::Update()
     {
         TranslateWorldView(PE_Vec2(0.0f, dispLowerY));
     }
+    // la camera ne peut pas trop translater
+    float dispLefterX = m_worldBounds.lower.x - m_worldView.lower.x;
+    float dispRighterX = m_worldBounds.upper.x - m_worldView.upper.x;
+    if (dispLefterX > 0)
+    {
+        TranslateWorldView(PE_Vec2(dispLefterX, 0.0f));
+    }
+    if (dispRighterX < 0)
+    {
+        TranslateWorldView(PE_Vec2(dispRighterX, 0.0f));
+    }
+
 }

@@ -2,7 +2,7 @@
 #include "LevelScene.h"
 #include "TitleScene.h"
 
-//#define FHD
+#define FHD
 #define FULLSCREEN
 //#define SKIP_MENU
 //#define DEFAUT_LEVEL 3
