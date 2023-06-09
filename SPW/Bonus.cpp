@@ -96,6 +96,10 @@ void Bonus::OnCollisionEnter(GameCollision &collision)
             {
                 m_animator.PlayAnimation("Empty");
                 //spaxn un bonus
+                // Créer un coeur
+                Heart* heart = new Heart(m_scene, Layer::TERRAIN);
+                heart->SetStartPosition(PE_Vec2(-0.5f, 0.8f) + GetPosition());
+                m_hit = true;
             }
         }
 

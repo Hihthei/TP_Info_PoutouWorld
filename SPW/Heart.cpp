@@ -45,7 +45,7 @@ void Heart::Start()
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
-    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.5f);
+    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.4f);
     bodyDef.name = "Heart";
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
@@ -77,6 +77,14 @@ void Heart::Render()
     m_animator.RenderCopyF(&rect, m_currentAnimation);
 }
 
+void Heart::FixedUpdate()
+{
+    PE_Body* body = GetBody();
+    PE_Vec2 position = body->GetPosition();
+    PE_Vec2 velocity = body->GetLocalVelocity();
+
+}
+
 void Heart::OnRespawn()
 {
     m_state = State::IDLE;
@@ -85,6 +93,7 @@ void Heart::OnRespawn()
     SetEnabled(true);
 
     m_animator.StopAnimations();
+    
     m_animator.PlayAnimation("Idle");
 }
 

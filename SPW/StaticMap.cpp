@@ -25,6 +25,27 @@ StaticMap::StaticMap(Scene &scene, int width, int height) :
     m_gterrainPart = atlas2->GetPart("Terrain");
     AssertNew(m_gterrainPart);
 
+    m_gwoodPart = atlas2->GetPart("Wood");
+    AssertNew(m_gwoodPart);
+
+    m_goneWayPart = atlas2->GetPart("OneWay");
+    AssertNew(m_goneWayPart);
+
+    m_gspikePart = atlas2->GetPart("Spike");
+    AssertNew(m_gspikePart);
+
+    m_gsteepsloper = atlas2->GetPart("Terrain");
+    AssertNew(m_gsteepsloper);
+
+    m_gsteepslopel = atlas2->GetPart("Terrain");
+    AssertNew(m_gsteepslopel);
+
+    m_ggentlesloper = atlas2->GetPart("Terrain");
+    AssertNew(m_ggentlesloper);
+
+    m_ggentleslopel = atlas2->GetPart("Terrain");
+    AssertNew(m_ggentleslopel);
+
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
 
     m_woodPart = atlas->GetPart("Wood");
@@ -163,6 +184,16 @@ void StaticMap::InitTiles()
                     tile.partIdx = 8;
                 else tile.partIdx = 9;
                 break;
+            case Tile::Type::GSTEEP_SLOPE_R:
+                if (IsGround(x, y + 1))
+                    tile.partIdx = 11;
+                else tile.partIdx = 10;
+                break;
+            case Tile::Type::GSTEEP_SLOPE_L:
+                if (IsGround(x, y + 1))
+                    tile.partIdx = 8;
+                else tile.partIdx = 9;
+                break;
             case Tile::Type::GENTLE_SLOPE_L:
                 if (IsGround(x - 1, y) && IsGround(x + 1, y) && IsGround(x, y + 1) == false)
                     tile.partIdx = 12;
@@ -173,6 +204,22 @@ void StaticMap::InitTiles()
                 break;
             case Tile::Type::GENTLE_SLOPE_R:
                 if (IsGround(x + 1, y) && IsGround(x - 1, y) && IsGround(x, y + 1) == false )
+                    tile.partIdx = 16;
+                else if (IsGround(x, y + 1))
+                    tile.partIdx = 17;
+                else
+                    tile.partIdx = 15;
+                break;
+            case Tile::Type::GGENTLE_SLOPE_L:
+                if (IsGround(x - 1, y) && IsGround(x + 1, y) && IsGround(x, y + 1) == false)
+                    tile.partIdx = 12;
+                else if (IsGround(x, y + 1))
+                    tile.partIdx = 14;
+                else
+                    tile.partIdx = 13;
+                break;
+            case Tile::Type::GGENTLE_SLOPE_R:
+                if (IsGround(x + 1, y) && IsGround(x - 1, y) && IsGround(x, y + 1) == false)
                     tile.partIdx = 16;
                 else if (IsGround(x, y + 1))
                     tile.partIdx = 17;
@@ -239,6 +286,18 @@ void StaticMap::Render()
             case Tile::Type::GENTLE_SLOPE_R:
                 m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
                 break;
+            case Tile::Type::GSTEEP_SLOPE_L:
+                m_gterrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GSTEEP_SLOPE_R:
+                m_gterrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GGENTLE_SLOPE_L:
+                m_gterrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GGENTLE_SLOPE_R:
+                m_gterrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                break;
             case Tile::Type::WOOD:
                 m_woodPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
                 break;
@@ -247,6 +306,15 @@ void StaticMap::Render()
                 break;
             case Tile::Type::SPIKE:
                 m_spikePart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GWOOD:
+                m_gwoodPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GONE_WAY:
+                m_goneWayPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                break;
+            case Tile::Type::GSPIKE:
+                m_gspikePart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
                 break;
             default:
                 break;
@@ -298,6 +366,11 @@ void StaticMap::Start()
                 colliderDef.isOneWay = true;
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
+            case Tile::Type::GONE_WAY:
+                colliderDef.isOneWay = true;
+                colliderDef.friction = 0.005f;
+                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                break;
 
             case Tile::Type::GROUND:
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
@@ -309,9 +382,21 @@ void StaticMap::Start()
             case Tile::Type::WOOD:
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
+            case Tile::Type::GWOOD:
+                colliderDef.friction = 0.005f;
+                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                break;
 
             case Tile::Type::SPIKE:
                 colliderDef.userData.id = 1;
+
+                vertices[0] = position + PE_Vec2(0.1f, 0.0f);
+                vertices[1] = position + PE_Vec2(0.9f, 0.0f);
+                vertices[2] = position + PE_Vec2(0.5f, 0.8f);
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GSPIKE:
+                colliderDef.userData.id = 2;
 
                 vertices[0] = position + PE_Vec2(0.1f, 0.0f);
                 vertices[1] = position + PE_Vec2(0.9f, 0.0f);
@@ -329,6 +414,24 @@ void StaticMap::Start()
                 break;
             case Tile::Type::STEEP_SLOPE_L:
                 colliderDef.userData.id = 9;
+
+                vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[1] = position + PE_Vec2(0.0f, 1.0f);
+                vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GSTEEP_SLOPE_R:
+                colliderDef.friction = 0.005f;
+                colliderDef.userData.id = 11;
+
+                vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                vertices[1] = position + PE_Vec2(1.0f, 1.0f);
+                vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GSTEEP_SLOPE_L:
+                colliderDef.friction = 0.005f;
+                colliderDef.userData.id = 8;
 
                 vertices[0] = position + PE_Vec2(1.0f, 0.0f);
                 vertices[1] = position + PE_Vec2(0.0f, 1.0f);
@@ -356,7 +459,50 @@ void StaticMap::Start()
                     polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 }
                 break;
+            case Tile::Type::GGENTLE_SLOPE_L:
+                colliderDef.friction = 0.2f;
+                if (tile.partIdx == 12)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[1] = position + PE_Vec2(0.0f, 1.0f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.5f);
+                    polygon.SetVertices(vertices, 3);
+
+                }
+                else if (tile.partIdx == 13)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                    vertices[1] = position + PE_Vec2(0.0f, 0.5f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else
+                {
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                }
+                break;
             case Tile::Type::GENTLE_SLOPE_R:
+                if (tile.partIdx == 16)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[1] = position + PE_Vec2(1.0f, 1.0f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.5f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else if (tile.partIdx == 15)
+                {
+                    vertices[0] = position + PE_Vec2(1.0f, 0.0f);
+                    vertices[1] = position + PE_Vec2(1.0f, 0.5f);
+                    vertices[2] = position + PE_Vec2(0.0f, 0.0f);
+                    polygon.SetVertices(vertices, 3);
+                }
+                else
+                {
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                }
+                break;
+            case Tile::Type::GGENTLE_SLOPE_R:
+                colliderDef.friction = 0.2f;
                 if (tile.partIdx == 16)
                 {
                     vertices[0] = position + PE_Vec2(1.0f, 0.5f);
@@ -451,6 +597,11 @@ bool StaticMap::IsGround(int x, int y) const
     case Tile::Type::STEEP_SLOPE_R:
     case Tile::Type::GENTLE_SLOPE_L:
     case Tile::Type::GENTLE_SLOPE_R:
+    case Tile::Type::GGROUND:
+    case Tile::Type::GSTEEP_SLOPE_L:
+    case Tile::Type::GSTEEP_SLOPE_R:
+    case Tile::Type::GGENTLE_SLOPE_L:
+    case Tile::Type::GGENTLE_SLOPE_R:
         return true;
     default:
         return false;
