@@ -54,6 +54,7 @@ void Nut::Start()
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    bodyDef.gravityScale = 5.0f;
     bodyDef.name = "Nut";
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
@@ -104,33 +105,6 @@ void Nut::FixedUpdate()
     Player *player = levelScene->GetPlayer();
 
     float dist = PE_Distance(position, player->GetPosition());
-
-    // DID : Mettre la noisette en mouvement à l'approche du joueur
-    /*if (dist <= 5.0f && m_state == State::IDLE && position == GetStartPosition())
-    {
-        body->SetAwake(true);
-        m_state = State::ATTACKING;
-        if(player->GetPosition().x < position.x)
-            body->SetVelocity(PE_Vec2(-3.0f, 10.0f));
-        else
-            body->SetVelocity(PE_Vec2(3.0f, 10.0f));
-    }
-    else if (position.y == GetStartPosition().y)
-    {
-        m_state = State::SPINNING;
-        if (body->IsAwake() && dist <= 5.0f && m_state == State::SPINNING)
-        {
-            if (player->GetPosition().x < position.x)
-                body->SetVelocity(PE_Vec2(-3.0f, 0.0f));
-            else
-                body->SetVelocity(PE_Vec2(3.0f, 0.0f));
-        }
-        else if (dist > 9.0f)
-        {
-            body->SetAwake(false);
-            m_state = State::IDLE;
-        }
-    }  */
 
     if (dist > 24.0f)
     {

@@ -6,7 +6,7 @@
 #include "Utils.h"
 
 Boss::Boss(Scene& scene) :
-    Enemy(scene), m_animator(), m_state(State::IDLE), b_onScreen(false)
+    Enemy(scene), b_animator(), b_state(State::IDLE), b_onScreen(false), b_heartCount(5)
 {
     m_name = "Boss";
 
@@ -18,7 +18,7 @@ Boss::Boss(Scene& scene) :
     // Animation "Idle"
     part = atlas->GetPart("Idle");
     AssertNew(part);
-    idleAnim = new RE_TexAnim(m_animator, "Idle", part);
+    idleAnim = new RE_TexAnim(b_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
 }
 
@@ -31,7 +31,7 @@ void Boss::Start()
     SetToRespawn(true);
 
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Idle");
+    b_animator.PlayAnimation("Idle");
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
@@ -90,8 +90,25 @@ void Boss::FixedUpdate()
 
     b_globalTimer += m_scene.GetFixedTimeStep();
 
-    
+    // Chrono si le joueur et invincible
 
+    if (b_state == State::INVINCIBLE)
+    {
+        b_invicibleState = true;
+
+        b_state = State::INVINCIBLE_DELAY;
+    }
+    else if (b_invincibleDelay <= 2.0f && b_state == State::INVINCIBLE_DELAY)
+        b_invincibleDelay += m_scene.GetFixedTimeStep();
+    else
+    {
+        b_state = State::IDLE;
+        b_invincibleDelay = 0.0f;
+        b_invicibleState = false;
+    }
+
+    if (b_invicibleState)
+        printf("%.2f\n", b_invincibleDelay);
     
     float maxHValue = player->GetPosition().y + 5.0f;
 
@@ -105,15 +122,15 @@ void Boss::FixedUpdate()
     }
     if (dist <= 14.0f)
     {
-        if (m_state != State::DEAD && m_state != State::DYING && position.y < (maxHValue - 2))
+        if (b_state != State::DEAD && b_state != State::DYING && position.y < (maxHValue - 2))
             body->SetVelocity(PE_Vec2(0.0f, 0.0f));
     }
 
-    if (m_state == State::DEAD)
+    if (b_state == State::DEAD)
     {
-        body->SetVelocity(PE_Vec2(0.0f, 7.0f));
-        m_animator.PlayAnimation("Idle");
-        m_state = State::DYING;
+        body->SetGravityScale(0.4f);
+        b_animator.PlayAnimation("Idle");
+        b_state = State::DYING;
     }
     
 }
@@ -123,19 +140,19 @@ void Boss::Render()
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
 
-    m_animator.Update(m_scene.GetTime());
+    b_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
     SDL_FRect rect = { 0 };
     rect.h = 1.0f * scale;
     rect.w = 1.0f * scale;
     camera->WorldToView(GetPosition(), rect.x, rect.y);
-    m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
+    b_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
 void Boss::OnRespawn()
 {
-    m_state = State::IDLE;
+    b_state = State::IDLE;
 
     SetToRespawn(true);
     SetBodyEnabled(true);
@@ -146,35 +163,78 @@ void Boss::OnRespawn()
     body->SetVelocity(PE_Vec2::zero);
     body->ClearForces();
 
-    m_animator.StopAnimations();
-    m_animator.PlayAnimation("Idle");
+    b_animator.StopAnimations();
+    b_animator.PlayAnimation("Idle");
+}
+
+void Boss::AddHeart(int count)
+{
+    if (b_heartCount == 1)
+    {
+        Kill();
+        return;
+    }
+
+    b_heartCount += count;
+
+    printf("Il reste %d coeurs au boss\n", b_heartCount);
+}
+
+void Boss::Kill()
+{
+    m_scene.Quit();
 }
 
 void Boss::Damage(GameBody* damager)
 {
-    // DID
     Player* player = dynamic_cast<Player*>(damager);
-    if (player) player->Bounce();
-    m_animator.PlayAnimation("Idle");
-    m_state = State::DEAD;
+    if (player)
+        player->Bounce();
+
+    if (b_invicibleState)
+    {
+        return;
+    }
+
+    AddHeart(-1);
+
+    b_state = State::INVINCIBLE;
+}
+
+void Boss::OnCollisionEnter(GameCollision& collision)
+{
+    const PE_Manifold& manifold = collision.manifold;
+    PE_Collider* otherCollider = collision.otherCollider;
+
+
+    
+     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
+     {
+         if (b_invicibleState)
+             collision.SetEnabled(false);
+             
+     }
 }
 
 void Boss::OnCollisionStay(GameCollision& collision)
 {
     PE_Manifold& manifold = collision.manifold;
     PE_Collider* otherCollider = collision.otherCollider;
+    
 
-    // DID : Désactiver les collisions lorsque la noisette est en train de mourir
+    collision.SetEnabled(false);
 
-    if (m_state == State::DYING)
-    {
-        collision.SetEnabled(false);
-        return;
-    }
 
+    
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
+        if (b_invicibleState)
+        {
+            printf("ici c'est invincible\n");
+            return;
+        }
+
         Player* player = dynamic_cast<Player*>(collision.gameBody);
         if (player == nullptr)
         {
@@ -183,10 +243,11 @@ void Boss::OnCollisionStay(GameCollision& collision)
         }
 
         float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
+
         if (fabsf(angle) > PLAYER_DAMAGE_ANGLE)
         {
             if (player->GetStatePlayer())
-                player->Damage(0);
+                player->Damage(-1);
         }
         return;
     }
@@ -195,4 +256,9 @@ void Boss::OnCollisionStay(GameCollision& collision)
         collision.SetEnabled(false);
         return;
     }
+    else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
+    {
+        collision.SetEnabled(false);
+        return;
+    } 
 }

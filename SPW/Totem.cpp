@@ -45,6 +45,9 @@ void Totem::Start()
     PE_Collider* collider = body->CreateCollider(colliderDef);
 
     position = body->GetPosition();
+    positionSpawnBoss = position;
+    positionSpawnBoss.x -= 3.0f;
+    positionSpawnBoss.y += 10.0f;
 }
 
 void Totem::Render()
@@ -69,9 +72,9 @@ void Totem::OnCollisionEnter(GameCollision& collision)
 
     if (player->GetStatePlayer() && m_isActive == false)
     {
-        m_isActive = true;
+//        m_isActive = true;
         Boss* boss = new Boss(m_scene);
-        boss->SetStartPosition(position);
+        boss->SetStartPosition(positionSpawnBoss);
     }
 }
 

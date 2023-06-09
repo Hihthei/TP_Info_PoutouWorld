@@ -220,8 +220,6 @@ void Player::FixedUpdate()
     if (m_statePlayer == State_Player::INVINCIBLE)
     {
         m_invicibleState = true;
-        //        m_animator.PlayAnimation("Skidding");
-        // TODO -> faire le clignotement sur le joueur
 
         m_statePlayer = State_Player::INVINCIBLE_DELAY;
     }
@@ -539,13 +537,6 @@ void Player::OnCollisionEnter(GameCollision &collision)
 {
     const PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
-
-    // D�sactiver les collisions lorsque le joueur est en train de mourir ou est invincible
-    /*if (m_statePlayer == State_Player::DEAD || m_statePlayer == State_Player::DYING || m_statePlayer == State_Player::INVINCIBLE)
-    {
-        collision.SetEnabled(false);
-        return;
-    }*/
 
 
     // Collision avec un ennemi
