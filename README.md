@@ -55,6 +55,8 @@
 			Se désactive si elle est en dehors du champ de vision.
 	- Noisette 2 : 	Rebondit sur les murs et entres les noisettes.
 
+	- Boss : Le boss jettes des noisettes sur le joueur et se déplace dans les air.
+
 
 - Objets collectibles :
 	- Firefly :
@@ -101,3 +103,5 @@
 	- Affichage du nombre de coeurs restants
 
 	- Affichage du nombre de lucioles récupérées
+
+	- La caméra ne peut désormais plus depasé de la map
