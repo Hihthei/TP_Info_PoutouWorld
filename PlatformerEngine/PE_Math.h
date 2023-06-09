@@ -118,6 +118,12 @@ inline float PE_Distance(const PE_Vec2& a, const PE_Vec2& b)
     return c.Length();
 }
 
+inline float PE_DistanceX(const PE_Vec2& a, const PE_Vec2& b)
+{
+    PE_Vec2 c = a - b;
+    return c.x;
+}
+
 inline float PE_DistanceSquared(const PE_Vec2& a, const PE_Vec2& b)
 {
     PE_Vec2 c = a - b;
